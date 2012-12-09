@@ -1,0 +1,28 @@
+{# Pages #}
+<div id="lf-pages">
+  <div id="lf-page-1"></div>
+  <div id="lf-page-2"></div>
+  <div id="lf-page">
+    <article>
+      {% block header %}
+      <header>
+        <h1>{{resource.meta.title|typogrify|e}}</h1>
+        {% if resource.meta.author != None %}
+        <h2>{{resource.meta.author|e}}</h2>
+        {% endif %}
+        {% from "macros.j2" import resource_date with context %}
+        {{ resource_date(resource) }}
+      </header>
+      {% endblock %}
+      {% block main %}
+      <div id="lf-main" role="main">
+        {% filter markdown|typogrify -%}
+        {% mark post -%}{% block post -%}{%- endblock %}{%- endmark %}
+        {%- endfilter %}
+      </div>
+      {% endblock %}
+    </article>
+    {% include "prevnext.j2" %}
+    {% include "comments.j2" %}
+  </div>
+</div>
