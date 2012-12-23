@@ -116,7 +116,7 @@ article {
   padding-bottom: 1.625em;
   margin: 3.25em 1em;
   font-weight: bold;
-  font-family: futura-pt, 'Droid Sans', sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
+  font-family: 'Source Sans Pro','Droid Sans',sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
 }
 #lf-page header h1 {
   color: #21519C;
@@ -176,7 +176,7 @@ article {
 #lf-page h3,
 #lf-page h4 {
   color: #21519C;
-  font-family: futura-pt, 'Droid Sans', sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
+  font-family: 'Source Sans Pro','Droid Sans',sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
   font-weight: bold;
 }
 #lf-page h1 {
@@ -267,11 +267,11 @@ article {
   color: #21519C;
   margin-left: -0.555em;
   margin-bottom: -0.888em;
-  font-family: Baskerville, 'Goudy Old Style', 'Goudy Bookletter 1911', Palatino, 'Palatino Linotype', 'URW Palladio L', 'Cochin', 'Book Antiqua', 'Apple Chancery', 'Constantia', ff-tisa-web-pro, 'Droid Serif', Georgia, serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
+  font-family: Baskerville, 'Goudy Old Style', 'Goudy Bookletter 1911', Palatino, 'Palatino Linotype', 'URW Palladio L', 'Cochin', 'Book Antiqua', 'Apple Chancery', 'Constantia', 'Noticia Text', 'Droid Serif', Georgia, serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
 }
 #lf-page article blockquote:lang(en):before {
   content: '“';
-  font-family: Georgia, futura-pt, 'Droid Sans', sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
+  font-family: 'Source Sans Pro','Droid Sans',sans-serif, 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS';
 }
 .dsq-comment-message blockquote {
   margin: 1.625em 26px;
@@ -812,7 +812,7 @@ pre .amp {
   display: block;
   visibility: hidden;
   transition: all 0.2s ease-in-out;
-  top: -250px;
+  top: -8px;
   left: 0;
 }
 #lf-links .lf-link .lf-link-inner {

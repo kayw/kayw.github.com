@@ -1,0 +1,6 @@
+extends: base.j2
+default_block: post
+language: en
+listable: true 
+comments: true 
+class: article 

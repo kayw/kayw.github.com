@@ -1,111 +1,104 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/1999/xhtml">
 <html>
-  <head>
-  <meta charset="utf-8">
-  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-       Remove this if you use the .htaccess -->
-  <meta http-equiv="X-UA-Compatible" content="{{ resource.meta.compatibility }}">
-  <!-- encoding must be specified within the first 512 bytes
-        www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#charset -->
+<head>
+<meta charset="utf-8">
+<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+     Remove this if you use the .htaccess -->
+<meta http-equiv="X-UA-Compatible" content="{{ resource.meta.compatibility }}">
+<!-- encoding must be specified within the first 512 bytes
+      www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#charset -->
 
-  <!-- meta element for compatibility mode needs to be before
-        all elements except title & meta
-        msdn.microsoft.com/en-us/library/cc288325(VS.85).aspx -->
-  <!-- Chrome Frame is only invoked if meta element for
-        compatibility mode is within the first 1K bytes
-        code.google.com/p/chromium/issues/detail?id=23003 -->
-  <title>{{ resource.meta.title }}</title>
-  <meta name="description" content="{{ resource.meta.description }}">
-  <meta name="author" content="{{ resource.meta.author }}">
+<!-- meta element for compatibility mode needs to be before
+      all elements except title & meta
+      msdn.microsoft.com/en-us/library/cc288325(VS.85).aspx -->
+<!-- Chrome Frame is only invoked if meta element for
+      compatibility mode is within the first 1K bytes
+      code.google.com/p/chromium/issues/detail?id=23003 -->
+<title>{{ resource.meta.title }}</title>
+<meta name="description" content="{{ resource.meta.description }}">
+<meta name="author" content="{{ resource.meta.author }}">
+<!--  Mobile viewport optimized: j.mp/bplateviewport -->
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!-- Place favicon.ico & apple-touch-icon.png
+      in the root of your domain and delete these references -->
+<link rel="shortcut icon" href="{{ media_url('/favicon.ico') }}">
+<link rel="alternate" href="{{ content_url( resource.meta.language + '/atom.xml') }}" type="application/atom+xml" title="ATOM feed">
+<link rel="stylesheet" href="{{ media_url('css/luffy.css') }}">
+<link rel="stylesheet" href="{{ media_url('css/lorem.css') }}">
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Inconsolata|Source+Sans+Pro:700|Noticia+Text:400,400italic' type='text/css'>
+<!-- All JavaScript at the bottom, except for Modernizr which
+      enables HTML5 elements & feature detects -->
+<script src="{{ media_url('js/mp.js') }}"></script>
+</head>
+<body>
+{% include "menu.j2" %}
 
-  <!--  Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+{% include "sidebar.j2" %}
 
-  <!-- Place favicon.ico & apple-touch-icon.png
-        in the root of your domain and delete these references -->
-  <link rel="shortcut icon" href="{{ media_url('/favicon.ico') }}">
-
-  <link rel="alternate" href="{{ content_url( resource.meta.language + '/atom.xml') }}" type="application/atom+xml" title="ATOM feed">
-  <link rel="stylesheet" href="{{ media_url('css/luffy.css') }}">
-  <link rel="stylesheet" href="{{ media_url('css/lorem.css') }}">
-  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Inconsolata|Source+Sans+Pro:700|Noticia+Text:400,400italic' type='text/css'>
-  <!-- All JavaScript at the bottom, except for Modernizr which
-        enables HTML5 elements & feature detects -->
-  <script src="{{ media_url('js/mp.js') }}"></script>
-  <script src="{{ media_url('js/lorem.js') }}"></script>
-  <script>
-    yepnope([{test: Modernizr.fontface,
-          yep: '//use.typekit.net/{{ site.config.typekit }}.js',
-          complete: function() { try { Typekit.load(); } catch(e) {}; }
-    }]);
-  </script>
-  </head>
-  <body>
-  {% include "menu.j2" %}
-  {% include "sidebar.j2" %}
   <div class="main-wrap">
-      <div class="container" id="main">
-      {# Pages #}
-      <div id="lf-pages">
-        <div id="lf-page-1"></div>
-        <div id="lf-page-2"></div>
-        <div id="lf-page">
-          <article>
-          {% block header %}
-          <header>
-          <h1>{{resource.meta.title|typogrify|e}}</h1>
-          {% if resource.meta.author != None %}
-          <h2>{{resource.meta.author|e}}</h2>
-          {% endif %}
-          {% from "macros.j2" import resource_date with context %}
-          {{ resource_date(resource) }}
-          </header>
-          {% endblock %}
-          {% block main %}
-          <div id="lf-main" role="main">
-            {% filter markdown|typogrify -%}
-            {% mark post -%}{% block post -%}{%- endblock %}{%- endmark %}
-            {%- endfilter %}
-          </div>
-          {% endblock %}
-          {% from "macros.j2" import list_post_tags with context %}
-          {{ list_post_tags(resource.meta.language) }}
-          </article>
-          {% include "prevnext.j2" %}
-          {% include "comments.j2" %}
+    <div class="container" id="main">
+    {# Pages -#}
+    <div id="lf-pages">
+      <div id="lf-page-1"></div>
+      <div id="lf-page-2"></div>
+      <div id="lf-page">
+        <article>
+        <header>
+        <h1>{{resource.meta.title|typogrify|e}}</h1>
+        {%- if resource.meta.author != None -%}
+        <h2>{{resource.meta.author|e}}</h2>
+        {%- endif -%}
+        {% from "macros.j2" import resource_date with context -%}
+        {{ resource_date(resource) }}
+        </header>
+        {% block main -%}
+        <div id="lf-main" role="main">
+          {% filter markdown|typogrify -%}
+          {% mark post -%}{% block post -%}{%- endblock %}{%- endmark %}
+          {%- endfilter %}
+
         </div>
-      </div>
+        {%- endblock %}
+        {% from "macros.j2" import list_post_tags with context -%}
+        {{ list_post_tags(resource.meta.language) }}
+        </article>
+        {%- include "prevnext.j2" %}
+        {%- include "comments.j2" %}
+
       </div>
     </div>
-    <footer id="site-info">
-      <div class="si-wrap">
-        <div class="si-section-1">
-            <ul>
-              <li>Powered On <a href="{{ resource.meta.PowerUrl }}">{{ resource.meta.PowerHost }}</a></li>
-              <li>Generated By <a href="{{ resource.meta.GeneratorUrl }}">{{ resource.meta.Generator }}</a></li>
-              <li>Designed With <a href="">Bootstrap</a></li>
-              <li>Borrowed From <a href="http://vincent.bernat.im/">Vincent Bernat</a>&amp;<a href="http://ontologicalwarfare.com/">Anselm Levskaya</a></li>
-            </ul>
-        </div>
-        <div class="si-section-3">
-          <p class="pull-right"><a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="{{ media_url('images/88x31.png') }}"></a><br />This work is licensed under a<br>
-        <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0<br> Unported License</a></p>
-        </div>
-        <div class="si-section-2">
-            <li><a href="">@kayw</a></li>
-            <li><a href="">Github</a></li>
-        </div>
+    </div>
+  </div>
+  <footer id="site-info">
+    <div class="si-wrap">
+      <div class="si-section-1">
+          <ul>
+            <li>Powered On <a href="{{ resource.meta.PowerUrl }}">{{ resource.meta.PowerHost }}</a></li>
+            <li>Generated By <a href="{{ resource.meta.GeneratorUrl }}">{{ resource.meta.Generator }}</a></li>
+            <li>Designed With <a href="">Bootstrap</a></li>
+            <li>Borrowed From <a href="http://vincent.bernat.im/">Vincent Bernat</a>&amp;<a href="http://ontologicalwarfare.com/">Anselm Levskaya</a></li>
+          </ul>
       </div>
-    </footer>
-    <!-- Javascript at the bottom for fast page loading -->
-    <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ media_url('js/libs/jquery-1.8.3.min.js') }}">\x3C/script>')</script>
-    <script src="{{ media_url('js/luffy.js') }}" async></script>
-    <!--[if lt IE 7 ]>
-      <script src="js/libs/dd_belatedpng.js"></script>
-      <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
-    <![endif]-->
-    {% include "analytics.j2" %}
-    </body>
+      <div class="si-section-3">
+        <p class="pull-right"><a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="{{ media_url('images/88x31.png') }}"></a><br />This work is licensed under a<br>
+      <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0<br> Unported License</a></p>
+      </div>
+      <div class="si-section-2">
+          <li><a href="">@kayw</a></li>
+          <li><a href="">Github</a></li>
+      </div>
+    </div>
+  </footer>
+  <!-- Javascript at the bottom for fast page loading -->
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{ media_url('js/libs/jquery-1.8.3.min.js') }}">\x3C/script>')</script>
+  <script src="{{ media_url('js/luffy.js') }}" async></script>
+  <!--[if lt IE 7 ]>
+    <script src="js/libs/dd_belatedpng.js"></script>
+    <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
+  <![endif]-->
+  {%- include "analytics.j2" -%}
+
+</body>
 </html>
