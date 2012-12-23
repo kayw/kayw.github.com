@@ -1,6 +1,6 @@
 extends: base.j2
 default_block: post
-language: en
+language: zh
 listable: true 
 comments: true 
 class: article 
