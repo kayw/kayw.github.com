@@ -1,0 +1,16 @@
+---
+keywords: "blog, kayw, python, c/c++,archlinux" 
+uuid: 3fb2e1d0-cd9b-4ecc-8695-0bc83916e389
+class:
+listable: false 
+comments: false 
+created:
+---
+
+{% from "macros.j2" import list_posts with context %}
+{{ list_posts(resource.meta.language) }}
+
+<hr>
+
+{% from "macros.j2" import list_tags with context %}
+{{ list_tags(resource.meta.language) }}
