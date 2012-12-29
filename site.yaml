@@ -40,11 +40,11 @@ meta:
     created: git
     modified: git
     language: en
-    title: where dream face the life
+    title: A Solitary Soul
     author: kayw
     analytics:
     disqus:
-    PowerHost:
+    PowerHost: RedHat Openshift
     Generator: Hyde
     GeneratorUrl: https://github.com/hyde/hyde/
     share: true

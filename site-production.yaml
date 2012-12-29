@@ -17,7 +17,7 @@ plugins:
     - extensions.latex_render.LatexRenderPlugin
 context: 
   data: 
-    base: http://127.0.0.1:8080
+    base: http://blog-kayw.rhcloud.com
     languages: 
       zh: Chinese(Simplified) 
       en: English 
