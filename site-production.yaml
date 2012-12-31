@@ -19,5 +19,5 @@ context:
   data: 
     base: http://blog-kayw.rhcloud.com
     languages: 
-      zh: Chinese(Simplified) 
+      zh: Chinese(Simp) 
       en: English 
