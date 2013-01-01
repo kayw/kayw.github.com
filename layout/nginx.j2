@@ -14,7 +14,7 @@ http {
         listen       $OPENSHIFT_IP:$OPENSHIFT_PORT;
         server_name  localhost;
         location / {
-            root   html;
+            root   $OPENSHIFT_REPO_DIR/diy;
             index  index.html index.htm;
         }
 
