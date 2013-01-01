@@ -78,7 +78,7 @@
       {% for tag in resource.tags|sort %}
       <span class="lf-sprite-tag"></span>
       <a class="lf-tag" href="#tag-{{ tag }}">
-	{{ tag|attr("desc" + lang)|e }}{{ tag.desc|e }}
+	{{ tag|attr("desc_" + lang)|e }}{{ tag.desc|e }}
       </a>
       {% endfor %}
     </div>

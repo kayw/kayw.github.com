@@ -1,33 +1,53 @@
 {# nginx configuration to be included #}
-index         index.html;
-error_page    404 {{content_url('/en/404.html')}};
-add_header    "X-UA-Compatible" "IE=Edge,chrome=1";
-
-location = /nginx.conf {
-  expires     max;
-  return      404;
+worker_processes  1;
+events {
+    worker_connections  1024;
 }
 
-{# language selection #}
-{% for code, lang in languages %}
-location /{{code}} {
-  error_page  404 {{content_url('/' + code + '/404.html')}};
-}
-{% endfor %}
-location = / {
-{% for code, lang in languages %}
-  if ($http_accept_language ~* ^{{code}}) {
-    add_header Vary Accept-Language;
-    rewrite ^ /{{code}}/ permanent;
-  }
-{% endfor %}
-{# If not found in the first language, redirect to english #}
-  add_header  Vary Accept-Language;
-  rewrite ^   /en/ permanent;
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    server {
+        listen       $OPENSHIFT_IP:$OPENSHIFT_PORT;
+        server_name  localhost;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+        error_page    404 {{content_url('/en/404.html')}};
+        add_header    "X-UA-Compatible" "IE=Edge,chrome=1";
+
+        {# language selection #}
+        {% for code, lang in languages %}
+        location /{{code}} {
+          error_page  404 {{content_url('/' + code + '/404.html')}};
+        }
+        {% endfor %}
+        location = / {
+        {% for code, lang in languages %}
+          if ($http_accept_language ~* ^{{code}}) {
+            add_header Vary Accept-Language;
+            rewrite ^ /{{code}}/ permanent;
+          }
+        {% endfor %}
+        {# If not found in the first language, redirect to english #}
+          add_header  Vary Accept-Language;
+          rewrite ^   /en/ permanent;
+        }
+        
+        {# redirections #}
+        location = /favicon.ico {
+          expires     60d;
+          rewrite ^  /media/favicon.ico break;
+        }
+    }
 }
 
-{# redirections #}
-location = /favicon.ico {
-  expires     60d;
-  rewrite ^  /media/favicon.ico break;
-}
