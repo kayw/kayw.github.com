@@ -43,7 +43,8 @@ meta:
     title: A Solitary Soul
     author: kayw
     analytics:
-    disqus:
+    disqus: 
+    PowerUrl: http://openshift.redhat.com
     PowerHost: RedHat Openshift
     Generator: Hyde
     GeneratorUrl: https://github.com/hyde/hyde/
@@ -83,14 +84,6 @@ tagger:
            desc: "C-like"
         "python":
            desc: "Python"
-        "etc":
-            desc_en: "etc"
+        "misc":
+            desc_en: "misc"
             desc_zh: "其他"
-#    archives:
-#        blog:
-#            source: blog
-#            target: blog/tags
-#            template: tagged_posts.j2
-#            archive_extension: html
-#            meta:
-#                listable: false

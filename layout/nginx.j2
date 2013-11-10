@@ -10,11 +10,12 @@ http {
     default_type  application/octet-stream;
     sendfile        on;
     keepalive_timeout  65;
+    port_in_redirect off;
     server {
         listen       $OPENSHIFT_IP:$OPENSHIFT_PORT;
         server_name  localhost;
+        root   $OPENSHIFT_REPO_DIRdiy;
         location / {
-            root   $OPENSHIFT_REPO_DIR/diy;
             index  index.html index.htm;
         }
 
