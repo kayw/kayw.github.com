@@ -1,0 +1,23 @@
+extends: base.j2
+default_block: post
+created:
+modified:
+listable: true 
+comments: true 
+class: article 
+menu:
+    -
+        name: Blog
+        page: /en
+    -
+        name: 博客
+        page: /zh
+    -
+        name: Projects
+        page: project.html
+    -
+        name: Links
+        page: links.html
+    -
+        name: Feeds
+        page: atom.xml

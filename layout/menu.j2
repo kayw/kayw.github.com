@@ -2,17 +2,10 @@
   <div class="navbar">
     <div class="navbar-inner">
       <div class="container">
-        <a class="brand" href="/">TinKer</a>
         <ul class="nav">
-          {%- for menu in resource.meta.menu %}
-          {%- if menu['page'] %}
-
-          <li{% if content_url(resource.url).startswith(content_url(resource.meta.language + '/' + menu['page'])) %} class="active"{% endif %}><a href="{{ content_url(resource.meta.language + '/' + menu['page']) }}">{{ menu['name']|e }}</a></li>
-          {%- else %}
-
-          <li><a href="{{ content_url(resource.meta.language) }}">{{ menu['name']|e }}</a></li>
-          {%- endif %}
-          {%- endfor %}
+{% for menu in resource.meta.menu %}
+          <li{% if content_url(resource.url).startswith(content_url(menu['page'])) %} class="active"{% endif %}><a href="{{ content_url(menu['page']) }}">{{ menu['name']|e }}</a></li>
+{% endfor %}
 
       	</ul>
       </div>

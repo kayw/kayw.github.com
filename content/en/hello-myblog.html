@@ -1,10 +1,14 @@
 ---
 title: hello,My Blog
-share: true
 ---
 
 Hello, My Blog
 
+    ::python
+    def SayHello():
+        print "Hello, My Blog"  
+   
+<!-- c code begins -->
     :::c
     #include<stdio.h>
     int main(){
@@ -13,15 +17,14 @@ Hello, My Blog
     }
 
 
-123
 
-    {% filter syntax('python') %}
-    def SayHello():
-        print "Hello, My Blog"
-    {% endfilter %}
+{% filter syntax('python') %}
+def SayHello():
+    print "Hello, My Blog"
+{% endfilter %}
+
+Euler's identity, $e^{i\pi} + 1 = 0$, is widely considered the most beautiful theorem in mathematics
 
 
-345
-    :::python
-    def SayHello():
-        print "Hello, My Blog"
+...( Euler 18xx - 19xx 
+)...

@@ -4,10 +4,10 @@
         {{ resource.meta.title|e }} | {{ resource.meta.author|e }}
     </title>
     <link href="{{base}}{{ content_url(resource.url) }}" rel="self" />
-    <link href="{{base}}{{ content_url(resource.meta.language) }}"/>
-    <id>http://www.luffy.cx{{ content_url(resource.url) }}/</id>
+    <link href="{{base}}"/>
+    <id>{{ content_url(resource.url) }}/</id>
 
-    {% for res in resource.node|attr("walk_resources_sorted_by_time_" + resource.meta.language)()|top(6) %}
+    {% for res in resource.node.walk_resources_sorted_by_time()|top(6) %}
     {% if loop.first %}
     <updated>{{ res.meta.modified|xmldatetime }}</updated>
 
@@ -17,12 +17,12 @@
             <author><name>{{ res.meta.author|e }}</name></author>
             <link href="{{base}}{{ content_url(res.url) }}"/>
             <updated>{{ res.meta.created|xmldatetime }}</updated>
-            <id>http://www.luffy.cx{{ content_url(res.url) }}</id>
+            <id>{{ content_url(res.url) }}</id>
 
             <content type="html">
 <![CDATA[
 {% refer to res.relative_path as file -%}
-{{ file.article|markdown|typogrify }}
+{{ file.post|markdown|typogrify }}
 ]]>
             </content>
         </entry>

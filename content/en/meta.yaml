@@ -1,27 +1,5 @@
-extends: base.j2
-default_block: post
-language: en
-listable: true 
-comments: true 
-class: article 
-menu:
-    -
-        name: Blog
-        page:
-    -
-        name: Project
-        page: project.html
-    -
-        name: Link Collection
-        page: links.html
-    -
-        name: Feeds
-        page: atom.xml
 l10n:
-  next: "Next"
-  previous: "Previous"
   comments: "View or add a new comment (with Disqus)"
   attachments: "Attachments"
   tags: "Tags"
   share: "Share"
-  translations: "Translations"

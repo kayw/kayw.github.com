@@ -1,6 +1,6 @@
-extends: base.j2
-default_block: post
 language: zh
-listable: true 
-comments: true 
-class: article 
+l10n:
+  comments: "View or add a new comment (with Disqus)"
+  attachments: "Attachments"
+  tags: "Tags"
+  share: "Share"

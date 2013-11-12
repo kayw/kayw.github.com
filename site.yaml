@@ -13,7 +13,7 @@ plugins:
     - hyde.ext.plugins.textlinks.TextlinksPlugin
     - hyde.ext.plugins.languages.LanguagePlugin
     - hyde.ext.plugins.urls.UrlCleanerPlugin
-    - extensions.latex_render.LatexRenderPlugin
+#    - extensions.latex_render.LatexRenderPlugin
 markdown:
   extensions:
     - extra
@@ -28,6 +28,8 @@ simple_copy:
 urlcleaner:
   index_file_names:
     - index.html
+  strip_extensions:
+    - html
   append_slash: true
 context: 
   data: 
@@ -40,16 +42,16 @@ meta:
     created: git
     modified: git
     language: en
-    title: A Solitary Soul
+    title: A Solitary Tinker
     author: kayw
     analytics:
     disqus: 
-    PowerUrl: http://openshift.redhat.com
-    PowerHost: RedHat Openshift
     Generator: Hyde
     GeneratorUrl: https://github.com/hyde/hyde/
-    share: true
 sorter:
+  name:
+    attr:
+      - relative_path
   time:
     attr:
       - meta.created
@@ -77,13 +79,3 @@ sorter:
       meta.language: en
 tagger:
     sorter: time
-    tags:
-        "archlinux":
-           desc: "arch"
-        "c/c++":
-           desc: "C-like"
-        "python":
-           desc: "Python"
-        "misc":
-            desc_en: "misc"
-            desc_zh: "其他"

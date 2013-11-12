@@ -23,15 +23,9 @@ http {
         location = /50x.html {
             root   html;
         }
-        error_page    404 {{content_url('/en/404.html')}};
+        error_page    404 {{content_url('/404.html')}};
         add_header    "X-UA-Compatible" "IE=Edge,chrome=1";
 
-        {# language selection #}
-        {% for code, lang in languages %}
-        location /{{code}} {
-          error_page  404 {{content_url('/' + code + '/404.html')}};
-        }
-        {% endfor %}
         location = / {
         {% for code, lang in languages %}
           if ($http_accept_language ~* ^{{code}}) {
