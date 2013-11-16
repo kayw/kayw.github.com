@@ -17,6 +17,7 @@ u'<p>This is a reference to a footnote<sub>1</sub>.</p>'
 """
 
 import markdown
+from markdown.util import etree
 
 # Global Vars
 SUPERSCRIPT_RE = r'([\^_])\{([^\}]+)\}'  # the number is a superscript^{2} or subscript_{2}
@@ -29,8 +30,8 @@ class SuperscriptPattern(markdown.inlinepatterns.Pattern):
         supr = m.group(3)
         text = supr
 
-        el = markdown.etree.Element(tagname)
-        el.text = markdown.AtomicString(text)
+        el = etree.Element(tagname)
+        el.text = markdown.util.AtomicString(text)
         return el
 
 class SuperscriptExtension(markdown.Extension):

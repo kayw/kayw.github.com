@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="{{ media_url('css/reset.css') }}">
 <link rel="stylesheet" href="{{ media_url('css/luffy.css') }}">
 <link rel="stylesheet" href="{{ media_url('css/lorem.css') }}">
-<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Inconsolata|Source+Sans+Pro:700|Noticia+Text:400,400italic' type='text/css'>
+<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700,700italic,800,800italic|Inconsolata|Source+Code+Pro|Droid+Sans+Mono|Noticia+Text:400,400italic&effect=3d' type='text/css'>
 <!-- All JavaScript at the bottom, except for Modernizr which
       enables HTML5 elements & feature detects -->
 <script src="{{ media_url('js/mp.js') }}"></script>
@@ -36,8 +36,17 @@
 
   <div class="main-wrap">
     <div class="container" id="main">
+    <div class="row">
+      {#<!-- Left Column -->#} 
+      <div class="right-span">
+        <div class="rightcolumn">
+          {% block sidebarL %}
+            <br>
+          {% endblock sidebarL %}
+        </div>
+      </div>
     {# Pages -#}
-    <div id="lf-pages">
+    <div id="lf-pages" class="left-span">
       <div id="lf-page-1"></div>
       <div id="lf-page-2"></div>
       <div id="lf-page">
@@ -51,11 +60,11 @@
         {{ resource_date(resource) }}
         </header>
         {% block main -%}
+
         <div id="lf-main" role="main">
           {% filter markdown|typogrify -%}
           {% mark post -%}{% block post -%}{%- endblock %}{%- endmark %}
           {%- endfilter %}
-
         </div>
         {%- endblock %}
         {% from "macros.j2" import list_post_tags with context -%}
@@ -64,6 +73,7 @@
         {%- include "comments.j2" %}
 
       </div>
+    </div>
     </div>
     </div>
   </div>
@@ -91,6 +101,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="{{ media_url('js/libs/jquery-1.8.3.min.js') }}">\x3C/script>')</script>
   <script src="{{ media_url('js/luffy.js') }}" async></script>
+  <script src="{{ media_url('js/lorem.js') }}" async></script>
   <!--[if lt IE 7 ]>
     <script src="js/libs/dd_belatedpng.js"></script>
     <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>

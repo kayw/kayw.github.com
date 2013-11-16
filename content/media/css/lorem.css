@@ -9,7 +9,7 @@ html {
 body {
   margin: 0;
   height:100%;
-  font-family: 'Noticia Text','Droid Serif',Georgia,serif,'Lucida Grande','Lucida Sans Unicode','Arial Unicode MS';
+  font-family: 'Open Sans','Noticia Text', sans-serif;
   font-size: 13px;
   line-height: 18px;
   color: #333333;
@@ -44,7 +44,7 @@ textarea {
 }
 p {
   margin: 0 0 9px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans','Noticia Text', sans-serif;
   font-size: 13px;
   line-height: 18px;
 }
@@ -385,18 +385,7 @@ textarea:focus {
   background-color:#222222;
   border-right:1px solid #333333
 }
-.entries        { list-style: none; margin: 0; padding: 0 }
-.entries li     { margin: 0.8em 1.2em; }
-.entries li h2  { margin-left: -1em; }
-.add-post       { font-size: 0.9em; border-bottom: 1px solid #ccc; }
-.add-post dl    { font-weight: bold; }
-.metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
-                margin-bottom: 1em; background: #fafafa; }
-.flash          { background: #cee5f5; padding: 0.5em;
-                border: 1px solid #aacbe2; }
-.error          { background: #f0d6d6; padding: 0.5em; }
-.admin_post { font-size: 0.9em;}
-.sidebar  { width: 250px; float: right;}
+
 /* Animation */
 /* copy from idzr.org/404*/ 
 #canvas {
@@ -427,7 +416,7 @@ textarea:focus {
   color: rgb(17,17,17);
 }		     
 .code > p {
-  font-family:'Inconsolata','Droid Sans Mono',monospace,'Lucida Grande','Lucida Sans Unicode','Arial Unicode MS';
+  font-family:'Source Code Pro','Inconsolata','Droid Sans Mono',monospace;
   font-weight:500;
   text-shadow: rgba(17,17,17,.5) 0px 0px 10px;
 }
@@ -501,4 +490,53 @@ textarea:focus {
   0%    { -moz-transform: rotateY(360deg); }
   50%   { -moz-transform: rotateY(180deg); }
   100%  { -moz-transform: rotateY(0deg); }
+}
+
+/*modified from Levskaya.bootstrap.css */
+.row {
+  zoom: 1;
+  margin-left: -20px;
+}
+.row:before, .row:after {
+  display: table;
+  content: "";
+  zoom: 1;
+}
+.row:after {
+  clear: both;
+}
+.row > [class*="span"] {
+  display: inline;
+  float: right;
+/*  margin-left: 20px;*/
+}
+.right-span {
+  width: 220px;
+}
+.marginspacer {
+  float: left;
+  clear: left;
+}
+.marginnote {
+  font-family: 'Open Sans', 'Noticia Text', sans serif;
+  float: left;
+  clear: left;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 200px;
+  font-size: .8em;
+  line-height: 1.3em;
+  text-indent: 0em;
+  border-left: 5px solid rgb(188,231,45);
+}
+.hidden {
+  display: none;
+}
+.placeholder {
+  visibility: hidden;
+  font-size: 0px;
+  line-height: 0px;
+}
+p span.placeholder {
+  visibility: hidden;
 }

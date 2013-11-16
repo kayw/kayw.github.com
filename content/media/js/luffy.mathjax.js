@@ -1,8 +1,8 @@
-/* Load nathjax if needed */
+/* Load mathjax if needed */
 
 var luffy = luffy || {};
 luffy.mathjax = function() {
-    var delim = "·"; // It's "middle dot"
+    var delim = "$"; 
     var mathjax = "http://cdn.mathjax.org/mathjax/latest/MathJax.js";
 
     /* Don't load if we don't find the delimiter. */
@@ -14,6 +14,7 @@ luffy.mathjax = function() {
 		  /* Add more configuration stuff */
 		  MathJax.Hub.Config({
 		      elements: ["lf-main"], // Only process part of the page.
+              messageStyle: "none", // turn off status message
 		      tex2jax: {
 			  inlineMath: [ [delim,delim] ],
 			  displayMath: [ [delim + delim, delim + delim] ],

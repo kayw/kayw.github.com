@@ -6,6 +6,7 @@ etc. during markdown processing
 '''
 
 import markdown
+etree = markdown.etree_loader.importETree()
 
 class MathJaxPattern(markdown.inlinepatterns.Pattern):
 
@@ -13,7 +14,9 @@ class MathJaxPattern(markdown.inlinepatterns.Pattern):
         markdown.inlinepatterns.Pattern.__init__(self, r'(?<!\\)(\$\$?)(.+?)\2')
 
     def handleMatch(self, m):
-        return markdown.AtomicString(m.group(2) + m.group(3) + m.group(2))
+        node = etree.Element("latex");
+        node.text = markdown.util.AtomicString(m.group(2) + m.group(3) + m.group(2))
+        return node;
 
 class MathJaxExtension(markdown.Extension):
     def extendMarkdown(self, md, md_globals):
