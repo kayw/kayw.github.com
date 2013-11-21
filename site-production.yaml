@@ -14,7 +14,7 @@ plugins:
     - hyde.ext.plugins.textlinks.TextlinksPlugin
     - hyde.ext.plugins.languages.LanguagePlugin
     - hyde.ext.plugins.urls.UrlCleanerPlugin
-    - extensions.latex_render.LatexRenderPlugin
+#    - extensions.latex_render.LatexRenderPlugin
 context: 
   data: 
     base: http://blog-kayw.rhcloud.com

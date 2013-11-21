@@ -1,4 +1,5 @@
-
+@import url(reset.css);
+@import url(http://weloveiconfonts.com/api/?family=entypo|zocial);
 html {
   height:100%;
   color:rgb(51,51,51);
@@ -540,3 +541,196 @@ textarea:focus {
 p span.placeholder {
   visibility: hidden;
 }
+
+/* modified from http://cssdeck.com/labs/css-social-share-button */
+/* entypo */
+[class*="entypo-"]:before {
+  font-family: 'entypo', sans-serif;
+}
+/* zocial */
+[class*="zocial-"]:before {
+  font-family: 'zocial', sans-serif;
+}
+
+::selection {
+  background: transparent;
+}
+
+.article-footer {
+  margin-top: 0.75em;
+  margin-right: 0.4em;
+}
+  
+.article-footer .lorem-post-tags{
+  float: left;
+  display: inline-block;
+  zoom: 1;
+}
+
+#social-share {
+  float: right;
+  text-align:right;
+  /*
+  position:relative;
+  left:0;
+  right:0;
+  */
+  margin-right: 0;
+  overflow: hidden;
+  /*padding:70px 0 10px 0;*/
+  /*width:200px;*/
+  /*height:20px;*/
+  display: inline-block;
+  zoom: 1;
+}
+
+/*
+.checkbox:checked + .label{
+  background:#7B7484;
+  color:#231733;
+}
+
+.checkbox:checked ~ .social {
+  opacity:1;
+  -webkit-transform: scale(1) translateY(-90px);
+  -moz-transform:scale(1) translateY(-90px);
+  -o-transform:scale(1) translateY(-90px);
+  transform:scale(1) translateY(-90px);
+    -webkit-transition:.5s;
+  -moz-transition:.5s;
+  -o-transition:.5s;
+  transition:.5s;
+}
+*/
+
+#social-button {
+  font-size:28px;
+  cursor:pointer;
+  margin:0;
+  padding:5px 10px;
+  border-radius:30%;
+  color:#7B7484;
+  /*height:28px;*/
+}
+
+#social-button:hover {
+  background:#7B7484;
+  color:#231733;
+}
+
+.social-sites {
+	/*
+  transform-origin:50% 0%;
+  -webkit-transform: scale(0) translateY(-190px);
+  -moz-transform:scale(0) translateY(-190px);
+  -o-transform:scale(0) translateY(-190px);
+  transform:scale(0) translateY(-190px);*/
+/*  opacity:0;*/
+  width:0;
+  height: 26.5px;
+  position:relative;
+  display: inline-block;
+  overflow:hidden;
+/*  background:#3B5998;*/
+  text-align: center;
+}
+
+/*
+.social-sites {
+  /*position: relative;*/
+ /* height: 22px;
+}
+*/
+/*
+.socail ul {
+  position:relative;
+  display: inline-block;
+  overflow:hidden;
+  vertical-align: top;
+  left:0;
+  right:0;
+  margin:auto;
+  color:#fff;
+  height:46px;
+  /*width:180px;*/
+  /*
+  width:0;
+  background:#3B5998;
+  padding:0;
+  list-style:none;
+}
+
+.social ul li {
+  cursor:pointer;
+  width:26px;
+  margin:0;
+  padding:12px 0;
+  text-align:center;
+  float:left;
+  display:block;
+  height:22px;
+}
+
+*/
+/*
+.social-sites a {
+  display: block;
+  transition: all 0.3s ease 0s;
+  text-decoration: none;
+}
+
+.social-site:hover a {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.social-site:hover a {
+  color: #ffffff;
+}*/
+
+.social-sites a {
+  color: #FFFFFF !important;
+  border-radius: 50% 50% 50% 50%;
+  display: inline-block;
+  margin: 0 auto;
+  transition: box-shadow 0.4s ease-in-out 0s;
+  cursor: pointer;
+  position: relative;
+  width: 26px;
+  text-align: center;
+ /* height: 40px;*/
+}
+
+.social-sites a:hover {
+  color: #005580 !important;
+  box-shadow: 0 0 0 25px transparent;
+}
+/* http://brandcolors.net/ */
+/* http://designpieces.com/2012/12/social-media-colours-hex-and-rgb/ */
+.social-sites a[class*="reddit"] {
+  background: none repeat scroll 0 0 #cee2f8;
+  box-shadow: 0 0 0 0 rgba(206, 226, 248, 0.6);
+}
+
+.social-sites a[class*="facebook"] { 
+  background: none repeat scroll 0 0 #3b5998;
+  box-shadow: 0 0 0 0 rgba(59, 89, 152, 0.6);
+}
+
+.social-sites a[class*="twitter"] {
+  background: none repeat scroll 0 0 #00acee;
+  box-shadow: 0 0 0 0 rgba(0, 172, 238, 0.6);
+}
+.social-sites a[class*="googleplus"] {
+  background: none repeat scroll 0 0 #dd4b39;
+  box-shadow: 0 0 0 0 rgba(221, 75, 57, 0.6);
+}
+.social-sites a[class*="yahoo"] { 
+  background: none repeat scroll 0 0 #ff6600;
+  box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.6);
+}
+
+.cc-by-style { font-size: 20px; }
+
+/*http://techblog.tilllate.com/2008/07/20/ten-methods-to-obfuscate-e-mail-addresses-compared/ & comment js code */
+span.codedirection { unicode-bidi:bidi-override; direction: rtl; }
+.email-style { font-size: 20px; }

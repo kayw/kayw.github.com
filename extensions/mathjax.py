@@ -6,7 +6,7 @@ etc. during markdown processing
 '''
 
 import markdown
-etree = markdown.etree_loader.importETree()
+from markdown.util import etree
 
 class MathJaxPattern(markdown.inlinepatterns.Pattern):
 

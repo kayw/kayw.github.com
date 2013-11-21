@@ -91,7 +91,7 @@
 {% macro list_post_tags(lang) %}
 {% if resource.tags %}
 <div class="lorem-post-tags">
-  {{ resource.meta.l10n.tags }}: 
+  <strong>{{ resource.meta.l10n.tags }}</strong>: 
 {% for tag in resource.tags|sort %}
      <a href="{{ content_url(resource.meta.language) }}#tag-{{ tag }}">
 	    {{ tag|e }}
@@ -101,6 +101,23 @@
 {% endif %}
 {% endmacro %}
 
+{# http://cssdeck.com/labs/css-social-share-button #}
+{# Display share links for commentable articles #}
+{% macro social_share_mark() %}
+{% if resource.meta.comments -%}
+<div id="social-share">
+  <span id="social-button" class="entypo-share"></span> 
+  <span class="social-sites">
+    {% set url = base|urlencode + content_url(resource.url)|urlencode -%}
+    <a href="https://twitter.com/share?url={{url}}" class="site-static zocial-twitter" title="Share To Twitter"></a>
+    <a href="http://news.ycombinator.com/submitlink?u={{url}}" class="site-static zocial-yahoo" title="Share To YCombinator"></a>
+    <a href="http://www.reddit.com/submit?url={{url}}" class="site-static zocial-reddit" title="Share To Reddit"></a>
+    <a href="https://plus.google.com/share?url={{url}}" class="site-static zocial-googleplus" title="Share To Google+"></a>
+    <a href="http://www.facebook.com/sharer.php?u={{url}}" class="site-static zocial-facebook" title="Share To Facebook"></a>>
+  </span>
+</div>
+{%- endif %}
+{% endmacro %}
 
 {# Display a photo gallery; directory may be a directory or a prefix #}
 {% macro gallery(directory,description) %}

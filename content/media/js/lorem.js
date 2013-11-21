@@ -39,6 +39,14 @@ function initRandomPoster(){
 	setup_posters(document.getElementById('ring-3'));
 }
 //window.addEventListener('load', init, false);
+//http://techblog.tilllate.com/2008/07/20/ten-methods-to-obfuscate-e-mail-addresses-compared/ & comment js code
+$(function() {
+  $('span.codedirection').each(function(){
+    var email = $(this).html();
+    $(this).replaceWith('<a href="mailto:'+email+'" rel="nofollow" class = "zocial-email zocial-email email-style"> </a>');
+  });
+});
+
 
 /*
 # Margin Note Aligner
@@ -110,3 +118,28 @@ marginalia = function() {
 $(function() {
     marginalia();
 });
+
+
+/* http://stackoverflow.com/questions/12949178/jquery-slide-div-from-left-to-right-on-hover-of-img-text */
+/*
+$('#social-share').hover(function(){
+        $('.social').animate({width: '140px'}, 1000)
+    }, function(){
+        $('.social').animate({width: '0'}, 1000)
+    });
+    */
+var timeout;
+$('#social-share').hover(function(){
+    if (timeout)
+      clearTimeout(timeout);
+    $('.social-sites').stop().animate({
+        width: 150 //$('.social-sites').width()
+    }, 1000);
+}, function() {
+                timeout = setTimeout(function () {
+                    $('.social-sites').stop().animate({
+                        width: 0
+                    }, 200);
+                }, 500)
+                });
+
