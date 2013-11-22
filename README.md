@@ -1,9 +1,9 @@
 kayw.github.com
 ===============
 
-This site is a personal blog which recors my learning & thought
+This site is a personal blog which records my learning & thought
 
-It use a lot things from the following hyde generated blogs
+It won't be finished without the following published work help:
 * navigation menu themem is based on [Bootstrap][Bootstrap]
 * all luffy.\*.js and \*.j2 work are taken from [Vincent Bernat][Vincent Bernat] with a little modification
 * the main article block css construction also come from [Vincent Bernat][Vincent Bernat]
