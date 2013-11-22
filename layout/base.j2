@@ -94,6 +94,31 @@
           <li><a href="https://twitter.com/kayw0904">@kayw</a></li>
           <li><a href="https://github.com/kayw">Repos</a></li>
           <li><span class="codedirection">moc.kooltuo@wyak</span></li>
+<script type="text/javascript" language="javascript">
+<!--
+// http://stackoverflow.com/questions/748780/best-way-to-obfuscate-an-e-mail-address-on-a-website
+// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+// Random encryption key feature by Andrew Moulden, Site Engineering Ltd
+// This code is freeware provided these four comment lines remain intact
+// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+{ coded = "R2Yy@d8BqddR.sde"
+  key = "WZJiGrVnxNR3jlXy4tQoPgMh7F51uqvYbBmdE0SaOTcp8UCf6HeILK92kDsAzw"
+  shift=coded.length
+  link=""
+  for (i=0; i<coded.length; i++) {
+    if (key.indexOf(coded.charAt(i))==-1) {
+      ltr = coded.charAt(i)
+      link += (ltr)
+    }
+    else {     
+      ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+      link += (key.charAt(ltr))
+    }
+  }
+document.write("<li><a href='mailto:"+link+"'class = \"zocial-email zocial-email email-style\"></a></li>")
+}
+//-->
+</script>
       </div>
     </div>
   </footer>
@@ -108,6 +133,6 @@
     <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
   <![endif]-->
   {%- include "analytics.j2" -%}
-
+  <noscript><div id="noscript-warning">This blog work best with Javascript enabled</div><noscript>
 </body>
 </html>
