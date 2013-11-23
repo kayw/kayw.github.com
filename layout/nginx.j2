@@ -15,6 +15,7 @@ http {
         listen       $OPENSHIFT_IP:$OPENSHIFT_PORT;
         server_name  localhost;
         root   $OPENSHIFT_REPO_DIRdiy;
+        return 301 https://$host$request_uri;
         location / {
             index  index.html index.htm;
         }
@@ -43,6 +44,8 @@ http {
           expires     60d;
           rewrite ^  /media/favicon.ico break;
         }
+{# http://serverfault.com/questions/189431/how-can-i-configure-nginx-to-use-pretty-urls-for-static-sites #}
+	try_files $uri.html $uri $uri/
     }
 }
 
