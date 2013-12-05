@@ -6,10 +6,10 @@ class: article
 menu:
     -
         name: Blog
-        page: /en
+        page: /en/
     -
         name: 博客
-        page: /zh
+        page: /zh/
     -
         name: Projects
         page: project.html

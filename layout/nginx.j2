@@ -15,24 +15,19 @@ http {
         listen       $OPENSHIFT_IP:$OPENSHIFT_PORT;
         server_name  localhost;
         root   $OPENSHIFT_REPO_DIRdiy;
-        return 301 https://$host$request_uri;
-{#http://www.allampersandall.com/2012/06/nginx-rewrite-remove-html #}
-	{# here i'm telling the server to rewrite all requests
-	 for that contain a html extension-- remove the html #}
-
-	rewrite (.*)\.html $1 permanent;
+{#      return 301 https://$host$request_uri;  #}
 {# http://serverfault.com/questions/189431/how-can-i-configure-nginx-to-use-pretty-urls-for-static-sites #}
 
-	try_files $uri.html /index.html;
         location / {
             index  index.html index.htm;
+	    try_files $uri/ $uri.html index.html;
         }
 
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {
             root   html;
         }
-        error_page    404 {{content_url('/404.html')}};
+        error_page    404 /404.html;
         add_header    "X-UA-Compatible" "IE=Edge,chrome=1";
 
         location = / {
