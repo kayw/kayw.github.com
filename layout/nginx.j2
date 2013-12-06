@@ -15,12 +15,9 @@ http {
         listen       $OPENSHIFT_IP:$OPENSHIFT_PORT;
         server_name  localhost;
         root   $OPENSHIFT_REPO_DIRdiy;
-{#      return 301 https://$host$request_uri;  #}
-{# http://serverfault.com/questions/189431/how-can-i-configure-nginx-to-use-pretty-urls-for-static-sites #}
 
         location / {
-            index  index.html index.htm;
-	    try_files $uri/ $uri.html index.html;
+	    try_files "$uri/index.html" $uri/ $uri.html ;
         }
 
         error_page   500 502 503 504  /50x.html;
@@ -34,12 +31,12 @@ http {
         {% for code, lang in languages %}
           if ($http_accept_language ~* ^{{code}}) {
             add_header Vary Accept-Language;
-            rewrite ^ /{{code}}/ permanent;
+	    return 301 $scheme://$host/{{code}}/;
           }
         {% endfor %}
         {# If not found in the first language, redirect to english #}
           add_header  Vary Accept-Language;
-          rewrite ^   /en/ permanent;
+	  return 301  /en/;
         }
         
         {# redirections #}
