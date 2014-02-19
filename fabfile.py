@@ -51,4 +51,4 @@ def push():
     """Push production content to ace"""
     local("git push origin")
     local("rsync -avz deploy/ 5a5468a88aa74b8198b0bf1d12ea661f@blog-kayw.rhcloud.com:~/app-root/repo/diy")
-    local("rsync -avz deploy/nginx.conf 5a5468a88aa74b8198b0bf1d12ea661f@blog-kayw.rhcloud.com:~/app-root/data/nginx.conf.template")
+    local("rsync -avz deploy/nginx.conf 5a5468a88aa74b8198b0bf1d12ea661f@blog-kayw.rhcloud.com:~/app-root/data/conf/nginx.conf.template")
