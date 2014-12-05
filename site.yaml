@@ -80,3 +80,13 @@ sorter:
       meta.language: en
 tagger:
     sorter: time
+    tags:
+        "archlinux":
+           desc: "arch"
+        "c/c++":
+           desc: "C-like"
+        "python":
+           desc: "Python"
+        "misc":
+            desc_en: "misc"
+            desc_zh: "其他"
