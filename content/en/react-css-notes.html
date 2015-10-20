@@ -1,0 +1,51 @@
+  method              |  Pro Advantage                                  | Con Disadvantage
+  basic css           |                                                 |
+                                                                            Everything is global [5]
+                                                                            Dependencies are hard to manage
+                                                                            Difficult to remove dead code/unused rules
+                                                                            Sharing constants (class names, tags) is tough
+                                                                            Separate minification process
+                                                                            Non-deterministic resolution (async loading causes potentially different styles)
+                                                                            Breaks isolation (teams can override components/modules from other teams, often by accident)
+
+inline-style          | [6]                                              | [1]no pesudo-elements keyframes which is essential for building unqiue eye candy 
+                                                                            no vendor prefix, unable to use in server-side rendering
+                                                                            [2] [3]no cache, duplicates all over the places --> decrease loading performance, sent overload data on isomorphic --> can be cirmculatived by serval implementation [4]
+                                                                            [5]break DRY  specificity when inline and external style 
+
+
+
+
+css-module + css-next | [7] summary of css-module
+
+
+[1] https://news.ycombinator.com/item?id=9827794
+
+[2] https://news.ycombinator.com/item?id=10073785
+
+[3] https://github.com/callemall/material-ui/issues/1132
+
+[4] https://news.ycombinator.com/item?id=10078338
+
+[5] http://fullstackforum.com/2015/07/14/styling-in-react-and-atomic-css/
+
+[6] http://stackoverflow.com/questions/26882177/react-js-inline-style-best-practices
+
+[7] https://medium.com/seek-ui-engineering/the-end-of-global-css-90d2a4a06284  https://medium.com/seek-ui-engineering/block-element-modifying-your-javascript-components-d7f99fcab52b
+
+[8] an overview of current react styling methodology http://survivejs.com/webpack_react/styling_react/
+
+https://medium.com/@jviereck/modularise-css-the-react-way-1e817b317b04
+
+collections of React CSS implementation
+http://projects.formidablelabs.com/radium/
+
+https://byjoeybaker.com/react-inline-styles  https://github.com/callemall/material-ui/issues/1132
+
+https://news.ycombinator.com/item?id=10175736 inline css css module https://css-tricks.com/the-debate-around-do-we-even-need-css-anymore/
+https://github.com/callemall/material-ui/issues/30
+
+https://discuss.reactjs.org/t/introduction-to-react-css-modules/1880
+
+https://github.com/js-next/react-style
+http://reactcss.com/
