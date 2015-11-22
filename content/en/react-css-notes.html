@@ -8,7 +8,7 @@
                                                                             Non-deterministic resolution (async loading causes potentially different styles)
                                                                             Breaks isolation (teams can override components/modules from other teams, often by accident)
 
-inline-style          | [6]                                              | [1]no pesudo-elements keyframes which is essential for building unqiue eye candy 
+inline-style          | [6] directly avaible in js file                                              | [1]no pesudo-elements keyframes which is essential for building unqiue eye candy 
                                                                             no vendor prefix, unable to use in server-side rendering
                                                                             [2] [3]no cache, duplicates all over the places --> decrease loading performance, sent overload data on isomorphic --> can be cirmculatived by serval implementation [4]
                                                                             [5]break DRY  specificity when inline and external style 
@@ -16,7 +16,9 @@ inline-style          | [6]                                              | [1]no
 
 
 
-css-module + css-next | [7] summary of css-module
+css-module + css-next | [7] summary of css-module demo[11]                         | need alternative server bundle if used in isomorphic rendering either by extract plugin[9] or by isomorphic-tool[10]
+                                                                                     how to use globale css(like bootstrap) and local ones [13]
+                                                                                     css-module compose in isomorphic tool require error [14]  sass mixin inheritance cause repetion style
 
 
 [1] https://news.ycombinator.com/item?id=9827794
@@ -35,6 +37,16 @@ css-module + css-next | [7] summary of css-module
 
 [8] an overview of current react styling methodology http://survivejs.com/webpack_react/styling_react/
 
+[9] http://stackoverflow.com/questions/28569686/webpack-scss-flicker-before-pageload
+[10] https://github.com/halt-hammerzeit/webpack-isomorphic-tools/issues/7
+
+[11] https://github.com/css-modules/webpack-demo   https://github.com/gajus/react-css-modules-examples
+
+[12] https://github.com/css-modules/css-modules  https://github.com/cssnext/cssnext https://github.com/postcss/postcss
+
+[13] https://github.com/erikras/react-redux-universal-hot-example/issues/255
+[14] https://github.com/erikras/react-redux-universal-hot-example/issues/184
+
 https://medium.com/@jviereck/modularise-css-the-react-way-1e817b317b04
 
 collections of React CSS implementation
@@ -49,3 +61,12 @@ https://discuss.reactjs.org/t/introduction-to-react-css-modules/1880
 
 https://github.com/js-next/react-style
 http://reactcss.com/
+https://github.com/petehunt/jsxstyle
+
+https://github.com/postcss/benchmark
+https://github.com/wellington/realbench  sass preprocessors
+
+https://www.reddit.com/r/reactjs/comments/3p417o/react_mature_but_modern_cssstyles_solution/
+
+##boilerplates
+https://github.com/huchenme/react-hot-postcss-boilerplate postcss webpack cssnext
