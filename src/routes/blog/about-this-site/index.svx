@@ -1,0 +1,175 @@
+---
+title: 'Making a static blog with svelte-kit, tailwind and markdown'
+outline: 'A brief reference to the technologies used to create this website'
+tags: [ { name: 'Svelte Kit', link: 'https://kit.svelte.dev/' }, { name: 'Tailwind', link: 'https://www.tailwindcss.com' }, { name: 'Markdown', link: 'https://www.markdownguide.org/'} ]
+published_at: '20 September 2021'
+---
+
+<script>
+  import PostHeader from '$lib/PostHeader.svelte'
+</script>
+
+<PostHeader {title} {published_at} {tags} />
+
+## Table of Content
+1. [TLDR](#tldr)
+2. [Why](#why)
+3. [Context](#context)
+4. [How-to](#how-to)
+5. [Deploying](#deploying)
+6. [Conclusion](#conclusion)
+
+## TLDR
+
+This site was created using [Svelte-kit](https://kit.svelte.dev/), [Tailwind CSS](https://www.tailwindcss.com) and [markdown](https://www.markdownguide.org/).
+If you're interested, you can check [the source code](https://github.com/happysalada/svelte.megzari.com)
+
+## Context
+
+Svelte kit is the latest development from [Svelte](svelte.dev/) a JS frontend framework.
+
+## Why
+
+This is for those wanting to try svelte-kit on something simple like a markdown blog.
+It's a collection of information I wish I had when doing this.
+
+## How-to
+
+- From the [docs](https://svelte.dev/blog/sveltekit-beta), to create a squeletton using the following inside your repo.
+Note I'm using [pnpm](https://pnpm.js.org/) but it works the same with npm.
+```bash
+pnpm init svelte@next
+pnpm install
+pnpm run dev -- --open
+``` 
+- From there, you can use [Svelte-adder](https://github.com/svelte-add/svelte-adders).
+The svelte ecosystem has [mdsvex](https://github.com/pngwn/MDsveX) for markdown.
+[Tailwind jit](https://github.com/tailwindlabs/tailwindcss-jit) is the latest feature from tailwind
+From their docs run
+```bash
+# adds markdown capabilities
+pnpx svelte-add mdsvex 
+# adds tailwind with the latest jit version
+pnpx svelte-add tailwind --jit 
+pnpm install
+```
+- You can create new blog routes files under src/routes/, add metadata to your markdown posts by adding a simple header.
+```md
+---
+title: 'About this site'
+outline: 'A brief reference to the technologies used to create this website'
+tags: [ { name: 'Svelte Kit', link: 'https://kit.svelte.dev/' }, { name: 'Tailwind', link: 'https://www.tailwindcss.com' }, { name: 'Markdown', link: 'https://www.markdownguide.org/'} ]
+published_at: '3 April 2021'
+---
+```
+- You can then load those metadata on a blog page (listing your posts).
+Your `/blog/index.svelte` file, would look like this
+```svelte
+<script context="module" lang="ts">
+  const slugFromPath = (path: string): string => path.match(/([\w-]+)\/([\w-]+)\.(md|svx)/i)?.[1] ?? null;
+  const svxPosts = import.meta.glob('./**/*.{md,svx}');
+
+  let body = [];
+
+  for (const [path, resolver] of Object.entries(svxPosts)) {
+   const slug = slugFromPath(path)
+    body.push(resolver().then(({ metadata }) => ({ slug, ...metadata })));
+  }
+  /**
+   * @type {import('@sveltejs/kit').Load}
+   */
+  export async function load({ page, fetch }) {
+    const posts = await Promise.all(body);
+    return {
+          props: {
+        posts,
+      },
+    };
+  }
+</script>
+```
+Let's break this down a little.
+Svelte allows you to do glob imports.
+This code will look for all your svx (Svelte markdown format) file and import them.
+Since the import returns a promise, you need to load those metadata asychronously.
+Svelte kit has a [load](https://kit.svelte.dev/docs#loading) mechanism to fetch data on page load.
+This load function will just pass your posts metadata to your component as posts.
+To access the posts, the rest of the file would contain something like
+```svelte
+  <ul class="list-none">
+    {#each posts as {title, tags, outline, slug}}
+    <li class="list-none">
+      <a
+        class="text-blue-500 space-y-3"
+        rel="prefetch"
+        href="blog/{slug}"
+      >
+        <h2>
+          {title}
+        </h2>
+
+        <p class="text-white text-base">
+          {outline}
+        </p>
+
+        <p class="text-sm font-normal text-gray-500">
+          Tags: {#each tags as tag}
+            <Tag { tag }/>
+          {/each}
+        </p>
+      </a>
+    </li>
+    {/each}
+  </ul>
+```
+- For mdsvex syntax highlight, you need grab a prism theme css and load it in your global.css, I used the solarized light theme for code syntax highlight.
+
+  I use the [solarized web theme](http://www.stevenzc.com/2016/03/14/join-the-light-side.html) for the site's light theme mode.http://www.stevenzc.com/2016/03/14/join-the-light-side.html
+
+## Deploying
+
+Svelte kit has many different [adapters](https://kit.svelte.dev/docs#adapters)  (plugins to help you deploy).
+The static one (prerendering your site as a collection of static files) is straightforward to use.
+Just edit your `svelte.config.cjs` file and replace `node` with `static`.
+This results in the following
+```
+✓ 36 modules transformed.
+.svelte-kit/output/client/_app/manifest.json                                      3.62 KiB
+.svelte-kit/output/client/_app/pages/__error.svelte-e27a2dcc.js                   1.41 KiB / brotli: 0.70 KiB
+.svelte-kit/output/client/_app/pages/index.svelte-c013275e.js                     2.91 KiB / brotli: 1.08 KiB
+.svelte-kit/output/client/_app/pages/blog/__layout.svelte-de6a2000.js             0.91 KiB / brotli: 0.50 KiB
+.svelte-kit/output/client/_app/pages/about.svx-994c9fd3.js                        6.09 KiB / brotli: 2.10 KiB
+.svelte-kit/output/client/_app/pages/blog/index.svelte-e45a9dfa.js                4.87 KiB / brotli: 1.86 KiB
+.svelte-kit/output/client/_app/pages/blog/hello-blog/index.svx-9278af98.js        4.18 KiB / brotli: 1.33 KiB
+.svelte-kit/output/client/_app/chunks/vendor-abd97ba9.js                          8.01 KiB / brotli: 2.93 KiB
+.svelte-kit/output/client/_app/chunks/preload-helper-ec9aa979.js                  0.50 KiB / brotli: 0.28 KiB
+.svelte-kit/output/client/_app/pages/__layout.svelte-2dc7901e.js                  11.39 KiB / brotli: 3.52 KiB
+.svelte-kit/output/client/_app/chunks/Tag-65aebfdf.js                             0.85 KiB / brotli: 0.47 KiB
+.svelte-kit/output/client/_app/assets/pages/__error.svelte-e5737671.css           0.20 KiB / brotli: 0.10 KiB
+.svelte-kit/output/client/_app/assets/pages/about.svx-27ee0a73.css                2.07 KiB / brotli: 0.50 KiB
+.svelte-kit/output/client/_app/assets/pages/index.svelte-303af6ea.css             0.10 KiB / brotli: 0.09 KiB
+.svelte-kit/output/client/_app/chunks/PostHeader-10ae4abd.js                      2.30 KiB / brotli: 1.03 KiB
+.svelte-kit/output/client/_app/assets/pages/blog/__layout.svelte-fca1ba12.css     0.31 KiB / brotli: 0.15 KiB
+.svelte-kit/output/client/_app/assets/pages/blog/index.svelte-a8f2cfd3.css        0.04 KiB / brotli: 0.04 KiB
+.svelte-kit/output/client/_app/assets/start-c446e5f0.css                          0.18 KiB / brotli: 0.11 KiB
+.svelte-kit/output/client/_app/pages/blog/about-this-site/index.svx-acd55d5b.js   29.21 KiB / brotli: 5.58 KiB
+.svelte-kit/output/client/_app/start-fdd4e971.js                                  19.46 KiB / brotli: 5.77 KiB
+.svelte-kit/output/client/_app/assets/pages/__layout.svelte-0a1b0da0.css          17.59 KiB / brotli: 3.93 KiB
+```
+Those files could be smaller, but for a JS framework, the result is pretty impressive!
+I choose to deploy with Sveltekit's vercel adapter.
+
+## Conclusion
+
+Is worth learning svelte (if you don't already know it) to deploy a static blog?
+Probably not! However if you ever feel like trying, now you have a simple project to do so!
+
+
+Is it overkill to use a Svelte for a static blog?
+Most definitely! But at least with this guide you won't waste time doing it! 😄
+
+Are there any benefits then? Graphically, svelte enables you to do [really cool things](https://svelte.dev/examples#animate).
+
+## Credits
+
+Origin content is from [Raphael Megzari](https://megzari.com/blog), modified little by me.

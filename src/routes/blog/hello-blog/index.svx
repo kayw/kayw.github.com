@@ -1,0 +1,39 @@
+---
+title: 'Hello, My First Blog'
+outline: 'A blog Hello World and playground for new features'
+published_at: '19 September 2021'
+---
+
+<script>
+  import PostHeader from '$lib/PostHeader.svelte'
+</script>
+
+<PostHeader {title} {published_at} />
+
+## Hallo
+
+- *Hello, welcome to my blog world*
+
+- *你好,欢迎来到我的博客*
+
+- *こんにちは、ブログ*
+
+## Syntax Highlight
+
+```c
+#include<stdio.h>
+int main(){
+    printf("Hello,My Blog\n");
+    return 0;
+}
+```
+
+```ts
+function helloFromBlog(): void {
+  console.log('Hello, My Blog!');
+}
+```
+
+## Maths
+
+Euler[^1]'s identity, $e^(i\pi) + 1 = 0$, is widely considered the most beautiful theorem in mathematics ...(///Footnotes///[^1]:Euler 18xx - 19xx )...

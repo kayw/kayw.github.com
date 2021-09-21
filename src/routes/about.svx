@@ -1,0 +1,24 @@
+---
+title: About kayw
+layout: about
+---
+# Me
+I'm a software developer from China, currently live at Xiaoshan, Zhejiang, my hometown with my parents, my wife and my lovely daughter.
+
+I'm a versatile veteran with a sensible product mind. I have dabbled many fields in my previous job stints and spare time.
+
+  - SPA frontend with `reactjs`
+  
+  - Hybrid mobile app with `react native`
+  
+  - SAAS platform by `reactjs`, `nodejs`, `mysql`
+  
+  - Interactive analytic reporting prototype using `Clickhouse`
+  
+  - Pdf table ocr prototype with `MaskTextSpotter` deep learning algorithm 
+  
+  - DevOps with `k8s` cluster
+
+I'm more of a startup guy than a big enterprise expert. I hope to build a useful product, dip into my existing knowlegde and professionally try other interesting things like go, nlp, data lake, Raspberry Pi.
+
+I value simplicity and minimalism when choosing programming tools or technical stack. My prefered setup is ArchLinux as OS, vim as editor, dwm as window manager, alacritty and tmux as terminal, I like to program within terminal.You can see my home configs [here](https://github.com/kayw/dotfiles).

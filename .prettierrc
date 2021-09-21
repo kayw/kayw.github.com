@@ -1,0 +1,10 @@
+{
+  "overrides": [
+    {
+      "files": "*.svx",
+      "options": { "parser": "svelte" }
+    }
+  ],
+  "singleQuote": true,
+  "printWidth": 100
+}
