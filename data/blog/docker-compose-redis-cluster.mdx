@@ -1,0 +1,150 @@
+---
+title: Redis Cluster Setup With Docker Compose
+summary: In this post I write a note about how to setup redis cluster containers on single machine with docker compose
+date: '2023-09-18'
+tags: ['Docker Compose', 'Redis', 'DevOps']
+---
+
+Some days ago, I've came across a nodejs project which uses ioredis cluster connect method. It can't be start with single redis node, from the output error message, I've found it need a dedicated redis cluster for connection.
+So in order to run that project, I've learned how to build the redis cluster on local machine with docker.
+
+## Configure docker-compose.yml
+
+From the web I've gathered the following compose config for redis cluster. The cluster must have at least 6 instances, 3 for master, 3 for replica.
+
+```yaml
+version: '3.7'
+services:
+  redis1:
+    image: redis
+    container_name: redis-1
+    environment:
+      - PORT=6379
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis-cluster/6379/redis.conf:/usr/local/etc/redis/redis.conf
+      - './persistent/redis/6379:/data'
+    command: sh -c "redis-server /usr/local/etc/redis/redis.conf"
+  redis2:
+    image: redis
+    container_name: redis-2
+    environment:
+      - PORT=6380
+    ports:
+      - 6380:6380
+    volumes:
+      - ./redis-cluster/6380/redis.conf:/usr/local/etc/redis/redis.conf
+      - './persistent/redis/6380:/data'
+    command: sh -c "redis-server /usr/local/etc/redis/redis.conf"
+  redis3:
+    image: redis
+    container_name: redis-3
+    environment:
+      - PORT=6381
+    ports:
+      - 6381:6381
+    volumes:
+      - ./redis-cluster/6381/redis.conf:/usr/local/etc/redis/redis.conf
+      - './persistent/redis/6381:/data'
+    command: sh -c "redis-server /usr/local/etc/redis/redis.conf"
+  redis4:
+    image: redis
+    container_name: redis-4
+    environment:
+      - PORT=6382
+    ports:
+      - 6382:6382
+    volumes:
+      - ./redis-cluster/6382/redis.conf:/usr/local/etc/redis/redis.conf
+      - './persistent/redis/6382:/data'
+    command: sh -c "redis-server /usr/local/etc/redis/redis.conf"
+  redis5:
+    image: redis
+    container_name: redis-5
+    environment:
+      - PORT=6383
+    ports:
+      - 6383:6383
+    volumes:
+      - ./redis-cluster/6383/redis.conf:/usr/local/etc/redis/redis.conf
+      - './persistent/redis/6383:/data'
+    command: sh -c "redis-server /usr/local/etc/redis/redis.conf"
+  redis6:
+    image: redis
+    container_name: redis-6
+    environment:
+      - PORT=6384
+    ports:
+      - 6384:6384
+    volumes:
+      - ./redis-cluster/6384/redis.conf:/usr/local/etc/redis/redis.conf
+      - './persistent/redis/6384:/data'
+    command: sh -c "redis-server /usr/local/etc/redis/redis.conf"
+```
+
+In this config we expose ports to local network, use current folder as volume folder and create a `redis-cluster` folder for each redis config file, the folders and config files can be created like following bash script
+
+```bash
+for port in 6379 6480 6481 6482 6483 6484; do
+  mkdir -p "./redis-cluster/$port"
+  echo "cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes
+port ${port}"  > "./redis-cluster/$port/redis.conf"
+done
+```
+
+## Enable Cluster
+
+After created previous yaml and config file, you can start the redis cluster
+```bash
+docker-compose up -d
+
+docker-compose ps -a # check container state
+```
+
+next run `ip a` to get local machine ip address like `192.168.123.44` in below output
+
+```bash
+kayw@Arch compose $ ip a
+
+2: enp5s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether d4:5d:67:d7:32:bc brd ff:ff:ff:ff:ff:ff
+    inet 192.168.123.44/24 brd 192.168.123.255 scope global dynamic noprefixroute enp5s0
+       valid_lft 56509sec preferred_lft 45709sec
+    inet6 fe80::f684:2543:b48e:7090/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+next docker exec into any of the new created redis containers, run following command to enable clusters in docker
+
+```
+redis-cli --cluster create 192.168.123.44:6379 \
+ 192.168.123.44:6380 \
+ 192.168.123.44:6381 \
+ 192.168.123.44:6382 \
+ 192.168.123.44:6383 \
+ 192.168.123.44:6384 \
+ --cluster-replicas 1
+```
+
+To check if cluster start successfully, run following command to see cluster info
+```
+redis-cli -a password -c -h 192.168.123.44 -p 6379
+cluster info
+cluster nodes
+```
+
+When it shows cluster ip infos, the redis cluster is started ok.
+
+## Alternative
+
+There is a [bitnami image](https://github.com/bitnami/containers/blob/main/bitnami/redis-cluster/README.md) to deploy redis cluster container without manual intervation and many more other useful features. <SideNote content="I've not tested or used it. Do use it at your own risk." />
+
+
+## Reference
+
+1. https://www.jianshu.com/p/b951bf34cee5
+2. https://www.cnblogs.com/mxnote/articles/17195444.html

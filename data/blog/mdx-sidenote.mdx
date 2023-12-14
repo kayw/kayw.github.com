@@ -1,0 +1,130 @@
+---
+title: SideNote Component Within MDX
+summary: In this post I want to talk about the SideNote component I've made during this time's blog site refactor, its features and deficiency.
+date: '2023-10-02'
+tags: ['MDX', 'React', 'SideNote']
+---
+
+<TOCInline toc={props.toc} asDisclosure />
+
+## Previous Attempt
+
+I've seen the side note display feature on other folks's personal site since long ago like at year of 2011.
+
+ Since then I've always wanted to add this feature into mine personal blog.
+
+ My first try was through copying [Anselm Levskaya](http://ontologicalwarfare.com/) marginalia.py extension and some css js snippets used in its `hyde` static site template.
+
+ But it was in year of 2013, I didn't have enough jquery skills and also lacked web development knowledge, so I didn't know how to add link anchor for note to content and also couldn't make it show as responsive layout in mobile web page.
+
+ I haven't gotten enough time to pick up this topic these years and mostly now I prefered blog stack with JAMStack instead of the original hyde static site, these reasons have caused my delay try on new site note implementation on blog. In last week I've got some time to do my blog refractor in Next.Js with an exist template found on web, I finally got the time to make site note feature work on my own site.
+
+## Component Detail
+
+For mine site note component, I mainly refered to [kooslooijesteijn](https://www.kooslooijesteijn.net/blog/semantic-sidenotes)'s css layout described on its document and [jquery.sidenotes](https://acdlite.github.io/jquery.sidenotes/) css style code, also try and combine a lot of other implementation references through search. Here is what I've built for this component, the layout structure is like this
+
+```jsx
+export function SideNote(props: {
+  content: React.ReactElement;
+  children: React.ReactElement;
+  direction?: 'left' | 'right';
+}) {
+    return (<span className="inline sidenote">
+      <span aria-describedby={`sidenote-${count}`} className="sidenote-label">
+        <sup id={snrefId}>
+          <a
+            href={`#${snId}`}
+            className="sidenote-label-button"
+            onClick={(ev) => {
+            }}
+          >
+            {count}
+          </a>
+        </sup>
+      </span>
+      <small
+        id={snId}
+        className={`sidenote-content ${
+          checked ? 'sidenote-content-mobile' : 'sidenote-content-hidden'
+        } sidenote-content-${direction} sidenote-content-number-${count} bg-stone-300/40 dark:bg-zinc-600/40 text-[#313B44] dark:text-gray-300`}
+      >
+        <span className="sidenote-label float-left mr-[0.4em] relative leading-1 -top-[0.27778rem]">
+          {count}
+        </span>
+        <span className="sidenote-content-parenthesis">(sidenote:</span>
+        {content}
+        <a href={`#${snrefId}`} className="reversefootnote ml-1 no-underline">
+          ↩
+        </a>
+        <span className="sidenote-content-parenthesis">)</span>
+      </small>
+    </span>)
+}
+```
+
+used `small` tag within `<span>` as the note content container, the css is mainly like this
+
+```css
+@media screen and (max-width: 2000px) {
+  .sidenote-content-mobile {
+    display: block;
+    float: left;
+    min-width: 100%;
+    margin: 0.8rem 0;
+    padding: 0.8rem 1.6rem;
+  }
+  .sidenote-content-hidden {
+    position: absolute;
+    top: auto;
+    left: -99999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+}
+@media screen and (min-width: 2000px) {
+  .sidenote-content {
+    display: block;
+    position: absolute;
+    margin-top: -2rem;
+    width: 350px;
+    padding: 0.4rem;
+  }
+
+  .sidenote-content-left {
+    right: 0;
+    margin-right: calc(50vw + 40rem);
+    padding-left: 0.8rem;
+  }
+  .sidenote-content-right {
+    left: 0;
+    margin-left: calc(50vw + 20rem);
+    width: 400px;
+  }
+}
+```
+
+I've set the media breakpoint at 2000px as this blog section has a larger(tailwind 7xl) length, so only show side note at the left or right when screen width has a much larger value. The margin left or right value is set based on manual calculation for its absolute position as the side note container relative to outer full html container. When screen width is less than that, change the note section as float div below the paragraph tag.
+
+Besides the react jsx and css style things, I've set the counter by singelton counter value and added click hover style for sidenote container. <SideNote content={<span>The counter from [tufte css](https://edwardtufte.github.io/tufte-css/) implementation is through [css counter feature](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_counter_styles/Using_CSS_counters), but since I already had used a lot js for this component, so I've used js script to generate counter.</span>} />
+
+For full detail changes on side note component, could check [this react file](https://github.com/kayw/kayw.github.com/master/components/SideNote.tsx) and [this css related changes](https://github.com/kayw/kayw.github.com/master/css/tailwind.css#L87)
+
+As this component uses client side hooks for counter calculation and media responsive size match check, it need be used client component in NextJS 13. There is an error when added 'use client' for SideNote being used in mdx content, It's related to a contentlayer package issue, mentioned [here](https://github.com/contentlayerdev/contentlayer/issues/506), the SideNote component reference need be changed `(props) => <SideNote {...props} />` in mdx compoenent usage.
+{/*Various Implementations exist <SideNote content={<span>The summary of recent research on this topic can be found in <a href="">gwern</a> site</span>} direction="left" />, Here I mainly  */}
+
+## Future Improvements
+
+Current component implementation isn't perfect. Some aspects can be improved from my current thinking.
+
+- need make the left/right margin size value more robust based on element position to be suitable in different main content section width size situations
+
+- need find a way to check if sidenote position has been overlap with other `div`s, maybe could use [this api](https://stackoverflow.com/questions/1259585/get-element-at-specified-position-javascript) or [this detection](https://stackoverflow.com/questions/4230029/jquery-javascript-collision-detection) on all elements to move the note section margin top to be not overlapped
+
+- could write the mdx usage as `...(sidenote)...` to use remark plugin parse and transform into section layout tags or write componet as like `<SideNote content={``}>text</SideNote>` form to make mdx note content usage more separated from other written content
+
+## Notable References
+
+- https://gwern.net/sidenote
+- https://kennethfriedman.org/thoughts/2019/marginal-notes/
+- https://sirajchokshi.com/blog/sidenotes-for-markdown

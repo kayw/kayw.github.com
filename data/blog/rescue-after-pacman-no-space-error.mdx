@@ -1,0 +1,59 @@
+---
+title: Rescue On Pacman Sync Kernel Package Failure
+summary: I've encountered no space error message in mkinitcpio build phase when doing pacman -Syuu and can't boot after shutdown. Tried serveral ways to deal with the boot error, finally fixed the issue.
+date: '2021-12-19'
+tags: ['ArchLinux', 'Sysadmin']
+---
+
+## Problem
+Yesterday when I was doing a full system upgrade, there were a lot of error logs in pacman -Syuu somewhere step, the logs are full messages like these
+
+```conf
+[2021-12-18T22:49:05+0800] [PACMAN] Running 'pacman -Syuu'
+[2021-12-18T22:49:05+0800] [PACMAN] synchronizing package lists
+[2021-12-18T22:49:06+0800] [PACMAN] starting full system upgrade
+[2021-12-18T22:51:02+0800] [ALPM] running '60-mkinitcpio-remove.hook'...
+[2021-12-18T22:51:02+0800] [ALPM] running '70-dkms-upgrade.hook'...
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] /usr/bin/dkms: line 400: echo: write error: No space left on device
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] dkms.conf: Error! No 'DEST_MODULE_LOCATION' directive specified.
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] dkms.conf: Error! No 'PACKAGE_NAME' directive specified.
+[2021-12-18T22:51:02+0800] [ALPM-SCRIPTLET] dkms.conf: Error! No 'PACKAGE_VERSION' directive specified.
+```
+
+But the pacman install continued and other packages sync command and installation finished without any new errors, so I tried another `pacman -Syuu` in second time. Interestingly the second command run successfully, so I thought the issue should be solved, then shutdown the computer and go to sleep.
+
+The nightmire began when I start to boot the machine next day, it can't enter into linux console and X graphic window. It shows with this following error:
+<CImage />
+
+I've tried serveral reboots with no success. At that moment I have no idea what caused this and no solution yet.
+
+
+## Solution
+
+After some initial disappointed, nervous and anxious sweat moment, I've clam down with some deep breathe. I searched with this error message as keyword on ArchLinux bbs and search engine.
+
+ First I've found a thread which mentioned could use rescue paramter to boot into linux console to do another pacman update, I tried with kernel paramter with `init=/bin/sh` on grub start edit screen, but no luck, it still then boot with the above error.
+
+Then after some thought, I've found out the error is caused by kernel built failure and need rebuild the kernel. I realized I can use the live boot to rebuild the linux kernel and thus make the kernel boot ok again. So I used the archlinux usb live medium to do the reboot, enter into livecd on BIOS, mount the root to /mnt, boot dev to /mnt/boot,  run mkinitcpio -p linux after arch-chroot, reboot and finally it started linux console and X graphic successfully.
+
+
+## Reason
+
+After entering into linux terminal, I've checked the system again and found out that the /tmp/log has 48G accumulated from the chromium warning log messages in the past year running. This caused the pacman failed the mkinitcpio build in /tmp directory and thus caused subsequent big error. To avoid such errors happening again because of /tmp disk full issue, I've set the /tmp/logs into logrotated jobs, and always check the /tmp disk usage on every pacman upgrade.
+
+## Notes
+
+I've used the Archlinux as my desktop development environment for more than 10 years, but still feels scared when doing full system upgrade, sometimes it could go wrong suddenly without notice like the above unexpected error.
+ I think I need take more care when doing pacman sync upgrade and study more about arhclinux wiki document to handle and avoid such issue to happen again, at least I know I need learn new to improve the basic linux usage knowledge.
+ From this case's lesson, I think I should check which package build has the errors when the pacman sync error message emerge, rerun that package install before poweroff

@@ -1,29 +1,32 @@
 kayw.github.com
 ==============
 
-This site is a personal blog which records my learning & thought
+This repo is my personal site to record own learning & thought for future lookingback
 
 # JAMStack
 
 This blog site used the following tools:
 
-- SvelteKit
-- MDsveX
+- NextJS 13
+- [MDX](https://mdxjs.com/docs/what-is-mdx/) with ContentLayer
 - TailwindCSS
+
+Notable features included are:
+
+- Side Note
+- Image Popup Viewer
 
 # Acknowlege
 
-- [origin work](https://megzari.com/)
-- [rss, about page, dark mode](https://github.com/elianiva/elianiva.my.id)
-- [blog/index, rss](https://github.com/navneetsharmaui/sveltekit-blog)
+- most of site layout and styles are adapted from work of [Prabhu blog site](https://github.com/PrabhuKiran8790)
+- project card style is from [brittanychiang portfolio](https://brittanychiang.com/#projects)
 
-# WhatsNext
+# What's Next
 
-- rss
-- utterance comment
-- side note / footer note
 - remark math
 - reading time
+- blog fonts/layouts
+- About
 
 # Python Hyde SSG Implementation Credits
 

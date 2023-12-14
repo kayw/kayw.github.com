@@ -1,0 +1,336 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+p {
+  @apply text-black dark:text-gray-300 text-base md:text-lg leading-relaxed lg:leading-loose;
+}
+
+img {
+  @apply rounded-lg;
+}
+
+code {
+  @apply dark:text-green-400 rounded-md dark:bg-zinc-700;
+}
+
+ul,
+li {
+  @apply text-black dark:text-gray-300 text-base md:text-lg leading-relaxed lg:leading-loose;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+pre {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.wave {
+  animation-name: wave-animation; /* Refers to the name of your @keyframes element below */
+  animation-duration: 2.5s; /* Change to speed up or slow down */
+  animation-iteration-count: infinite; /* Never stop waving :) */
+  transform-origin: 70% 70%; /* Pivot around the bottom-left palm */
+  display: inline-block;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  } /* The following five values can be played with to make the waving more or less extreme */
+  20% {
+    transform: rotate(-8deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  } /* Reset for the last half to pause */
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.task-list-item::before {
+  @apply hidden;
+}
+
+.task-list-item {
+  @apply list-none;
+}
+
+.footnotes {
+  @apply mt-12 border-t border-gray-200 pt-8 dark:border-gray-700;
+}
+
+.data-footnote-backref {
+  @apply no-underline;
+}
+
+/* https://www.kooslooijesteijn.net/blog/semantic-sidenotes */
+@supports (text-underline-offset:0) {
+  .sidenote-label-button {
+    text-decoration-style: dotted;
+    text-decoration-line: underline;
+    text-decoration-color: #00bfff;
+    text-decoration-color: var(--text-color, #00bfff);
+    text-decoration-thickness: 0.2em;
+    text-underline-offset: 0.25em;
+    border-bottom: none;
+    text-decoration-skip: none;
+    text-decoration-skip-ink: none;
+    outline: 0.15rem solid transparent;
+    color: var(--action-color, #000911);
+    transition: text-decoration linear 50ms;
+    cursor: pointer;
+  }
+}
+
+.sidenote-content-parenthesis {
+  position: absolute;
+  top: auto;
+  left: -99999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+@media screen and (max-width: 2000px) {
+  .sidenote-content-mobile {
+    display: block;
+    float: left;
+    min-width: 100%;
+    margin: 0.8rem 0;
+    padding: 0.8rem 1.6rem;
+  }
+  .sidenote-content-hidden {
+    position: absolute;
+    top: auto;
+    left: -99999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+}
+@media screen and (min-width: 2000px) {
+  /*
+  .sidenote__content {
+    margin-right: -33.6rem;
+  }
+  */
+
+  .sidenote:hover .sidenote-label {
+    color: #00bfff;
+  }
+  .sidenote:hover .sidenote-label-button {
+    /*
+    color: #00bfff;
+    box-shadow: 0 10px 15px -3px rgb(0 191 255 / 0.3), 0 4px 6px -4px rgb(0 191 255 / 0.3);
+    border: 1px solid #00bfff;
+    padding: 0.5rem;
+    */
+
+    --background-color: #fff;
+    --GW-highlighted-link-outline-color: #00bfff;
+    --o-v-o: 4px;
+    --o-p: 4px;
+    --o-h-s: 2px;
+    box-shadow: var(--o-h-s) var(--o-v-o) 0 var(--o-p) var(--background-color),calc(-1 * var(--o-h-s)) var(--o-v-o) 0 var(--o-p) var(--background-color),var(--o-h-s) var(--o-v-o) 0 calc(var(--o-p) + 1px) var(--GW-highlighted-link-outline-color),calc(-1 * var(--o-h-s)) var(--o-v-o) 0 calc(var(--o-p) + 1px) var(--GW-highlighted-link-outline-color),var(--o-h-s) var(--o-v-o) 0 calc(var(--o-p) + 2px) var(--background-color),calc(-1 * var(--o-h-s)) var(--o-v-o) 0 calc(var(--o-p) + 2px) var(--background-color),var(--o-h-s) var(--o-v-o) 0 calc(var(--o-p) + 3px) var(--GW-highlighted-link-outline-color),calc(-1 * var(--o-h-s)) var(--o-v-o) 0 calc(var(--o-p) + 3px) var(--GW-highlighted-link-outline-color);
+  }
+  .sidenote:active .sidenote-label-button {
+  }
+  .sidenote:hover .sidenote-content {
+    box-shadow: 0 1px 3px 0 rgb(0 191 255 / 0.3), 0 1px 2px -1px rgb(0 191 255 / 0.3);
+  }
+  /*
+  .sidenote-label-button > * {
+    display: inline-block;
+  }
+  */
+  .sidenote-content {
+    display: block;
+    position: absolute;
+    margin-top: -2rem;
+    width: 350px;
+    padding: 0.4rem;
+  }
+
+  .sidenote-content-left {
+    right: 0;
+    margin-right: calc(50vw + 40rem);
+    padding-left: 0.8rem;
+  }
+  .sidenote-content-right {
+    left: 0;
+    margin-left: calc(50vw + 20rem);
+    width: 400px;
+  }
+}
+
+.sidenote-content {
+    font-family: 'Avenir Next', 'Avenir', 'jost', 'Helvetica', 'Tahoma', sans-serif;
+    font-size: 0.8rem;
+    line-height: 1rem;
+    font-weight: 500;
+}
+
+.csl-entry {
+  @apply my-5;
+}
+
+/* https://stackoverflow.com/questions/61083813/how-to-avoid-internal-autofill-selected-style-to-be-applied */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}
+
+.fadeImage-enter,
+.fadeImage-appear {
+  opacity: 0;
+}
+
+.fadeImage-enter-active,
+.fadeImage-appear-active {
+  opacity: 1;
+  transition: opacity 0.4s cubic-bezier(0.3, 1.3, 0.3, 1);
+}
+
+.fadeImage-exit {
+  opacity: 0;
+}
+
+.fadeImage-exit-active {
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.3, 1.3, 0.3, 1);
+}
+
+/* https://github.com/elianiva/elianiva.my.id/blob/master/static/global.css */
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --color-main-accent: #3d58a5; */
+  /*
+    --color-main-accent: #3d5dd9;
+    --color-main-bg: #fff6e5; /* #fbfaff; */
+    /*
+    --color-alt-bg: #fff6e5;
+    --color-special-bg: #efefef;
+    --color-main-text: #1d1b2e;
+    --color-alt-text: #696969;
+    --color-borders: #e8e8e8;
+    --color-thin: #b0b0b0;
+    --color-shine: #000000;
+    --filter-invert: invert(0);
+  }
+
+  /* set dark colours if user overrides it */
+  /*
+  [data-theme='dark'] {
+    --color-main-accent: #f23c4a;
+    --color-main-bg: #171c26;
+    --color-alt-bg: #20263a;
+    --color-special-bg: #2c3445;
+    --color-main-text: #f3f2f7;
+    --color-alt-text: #8fa0bf;
+    --color-borders: #3b465a;
+    --color-thin: #6b7a99;
+    --color-shine: #ffffff;
+    --filter-invert: invert(100%);
+  }
+
+  [data-theme='dark'] img {
+    filter: brightness(0.9) contrast(1.2);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-main-accent: #f23c4a;
+    --color-main-bg: #171c26;
+    --color-alt-bg: #20263a;
+    --color-special-bg: #2c3445;
+    --color-main-text: #f3f2f7;
+    --color-alt-text: #8fa0bf;
+    --color-borders: #3b465a;
+    --color-thin: #6b7a99;
+    --color-shine: #ffffff;
+    --filter-invert: invert(100%);
+    --color-code-selection: rgba(29, 59, 83, 0.9);
+    --prism-comment: #637777;
+    --prism-punctuation: #c792ea;
+    --prism-namespace: #b2ccd6;
+    --prism-symbol: #80cbc4;
+    --prism-keyword: #7fdbca;
+    --prism-boolean: #ff5874;
+    --prism-number: #f78c6c;
+    --prism-builtin: #82aaff;
+    --prism-selector: #c792ea;
+    --prism-inserted: #addb67;
+    --prism-classname: #ffcb8b;
+  }
+
+  /* set light colours if user overrides it */
+/*
+  [data-theme='light'] {
+    /* --color-main-accent: #3d58a5; */
+  /*
+    --color-main-accent: #3d5dd9;
+    --color-main-bg: #fbfaff;
+    --color-alt-bg: #ffffff;
+    --color-special-bg: #f4f4f4;
+    --color-main-text: #1d1b2e;
+    --color-alt-text: #696969;
+    --color-borders: #e4e4e4;
+    --color-thin: #b0b0b0;
+    --color-shine: #000000;
+    --filter-invert: invert(0);
+    --color-code-selection: rgba(211, 237, 243, 0.95);
+    --prism-comment: #989fb1;
+    --prism-punctuation: #d6438a;
+    --prism-namespace: #0c969b;
+    --prism-symbol: #0c969b;
+    --prism-keyword: #2aa298;
+    --prism-boolean: #bc5454;
+    --prism-number: #aa0982;
+    --prism-builtin: #4876d6;
+    --prism-selector: #994cc3;
+    --prism-inserted: #08916a;
+    --prism-classname: #111111;
+  }
+}
+html {
+  scrollbar-color: var(--color-thin) var(--color-special-bg);
+}
+
+body {
+  background-color: var(--color-main-bg);
+  overflow-x: hidden;
+  color: var(--color-main-text);
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: var(--color-main-accent);
+}
+
+html::-webkit-scrollbar {
+  background-color: var(--color-special-bg);
+  width: 0.5rem;
+}
+*/

@@ -1,0 +1,282 @@
+---
+title: 'backend interview notes'
+outline: 'A list of backend interview questions and code snippets'
+tags: [{ name: 'HTTP', link: 'https://kit.svelte.dev/' }, { name: 'React', link: 'https://kit.svelte.dev/' }, { name: 'CSS', link: 'https://www.tailwindcss.com' }, { name: 'JavaScript', link: 'https://www.markdownguide.org/'} ]
+published_at: '18 Nov 2023'
+---
+
+## NodeJs
+
+### Event Loop
+https://cnodejs.org/topic/57d68794cb6f605d360105bf
+
+```js
+var fs = require('fs')
+
+fs.readFile(__filename, () => {
+  setTimeout(() => {
+    console.log('timeout')
+  }, 0)
+  setImmediate(() => {
+    console.log('immediate')
+  })
+})
+```
+
+```
+event是由uv_run驱动的，并且是在UV_RUN_ONCE的模式下执行
+UV_RUN_ONCE就是你文中描述的
+
+poll 阶段: 获取新的I/O事件, 适当的条件下node将阻塞在这里;
+中的“适当条件”，它会阻塞在kqueue的kevent()函数中（这里以mac为例，linux下这一块由epoll_wait()函数处理，windows下则是IOCP）
+这里描述UV_RUN_ONCE为适当条件，是因为uv_run还有两种模式，对于UV_RUN_NOWAIT的模式，io_poll不会阻塞，会立即触发超时结束当前的event_loop，进入下一次循环（v4.4.2版本中仅用在进程退出前的最后检查）
+实际上，你描述的timer，在一次event loop中可能在两个地方执行：
+
+最开始以及close callbacks结束之后
+为什么这么说呢，就算不看源代码，我们也可以思考这样的一个场景：
+当你设置了一个超时timer，那么第一次进入uv_run_timer时，超时时间未到；此时进入kevent()阻塞等待
+如果此处不提供超时机制，那就会永远阻塞在kevent()的I/O等待中；所以我们在
+当前的event loop循环中的某一次时，如果存在timer且为达到设定时间，则会把最近的一个timer剩余超时时间作为参数传入io_poll()中，这样kevent()等待时，如果没有任何I/O事件触发，也会由timerout触发跳出等待的操作，结束本次时间循环
+所以呢，在UV_RUN_ONCE的模式下，每次循环结束前，即你说的close callback执行结束后，会再执行一次对timer的超时判断
+具体涉及到的代码如下：
+
+//deps/uv/src/unix/core.c
+int uv_run(uv_loop_t *loop, uv_run_mode mode) {
+  int timeout;
+  int r;
+  int ran_pending;
+  //uv__loop_alive返回的是event loop中是否还有待处理的handle或者request
+  //以及closing_handles是否为NULL,如果均没有,则返回0
+  r = uv__loop_alive(loop);
+  //更新当前event loop的时间戳,单位是ms
+  if (!r)
+      uv__update_time(loop);
+  while (r != 0 && loop->stop_flag == 0) {
+      //使用Linux下的高精度Timer hrtime更新loop->time,即event loop的时间戳
+      uv__update_time(loop);
+      //执行判断当前loop->time下有无到期的Timer,显然在同一个loop里面timer拥有最高的优先级
+      uv__run_timers(loop);
+      //判断当前的pending_queue是否有事件待处理,并且一次将&loop->pending_queue中的uv__io_t对应的cb全部拿出来执行
+      ran_pending = uv__run_pending(loop);
+      //实现在loop-watcher.c文件中,一次将&loop->idle_handles中的idle_cd全部执行完毕(如果存在的话)
+      uv__run_idle(loop);
+      //实现在loop-watcher.c文件中,一次将&loop->prepare_handles中的prepare_cb全部执行完毕(如果存在的话)
+      uv__run_prepare(loop);
+
+      timeout = 0;
+      //如果是UV_RUN_ONCE的模式,并且pending_queue队列为空,或者采用UV_RUN_DEFAULT(在一个loop中处理所有事件),则将timeout参数置为
+      //最近的一个定时器的超时时间,防止在uv_io_poll中阻塞住无法进入超时的timer中
+      if ((mode == UV_RUN_ONCE && !ran_pending) || mode == UV_RUN_DEFAULT)
+          timeout = uv_backend_timeout(loop);
+      //进入I/O处理的函数(重点分析的部分),此处挂载timeout是为了防止在uv_io_poll中陷入阻塞无法执行timers;并且对于mode为
+      //UV_RUN_NOWAIT类型的uv_run执行,timeout为0可以保证其立即跳出uv__io_poll,达到了非阻塞调用的效果
+      uv__io_poll(loop, timeout);
+      //实现在loop-watcher.c文件中,一次将&loop->check_handles中的check_cb全部执行完毕(如果存在的话)
+      uv__run_check(loop);
+      //执行结束时的资源释放,loop->closing_handles指针指向NULL
+      uv__run_closing_handles(loop);
+
+      if (mode == UV_RUN_ONCE) {
+          //如果是UV_RUN_ONCE模式,继续更新当前event loop的时间戳
+          uv__update_time(loop);
+          //执行timers,判断是否有已经到期的timer
+          uv__run_timers(loop);
+      }
+      r = uv__loop_alive(loop);
+      //在UV_RUN_ONCE和UV_RUN_NOWAIT模式中,跳出当前的循环
+      if (mode == UV_RUN_ONCE || mode == UV_RUN_NOWAIT)
+          break;
+  }
+
+  //标记当前的stop_flag为0,表示当前的loop执行完毕
+  if (loop->stop_flag != 0)
+      loop->stop_flag = 0;
+  //返回r的值
+  return r;
+}
+
+在node中，setTimeout(cb, 0) === setTimeout(cb, 1);
+而setImmediately属于uv_run_check的部分
+确实每次loop进来，都是先检查uv_run_timer的，但是由于cpu工作耗费时间，比如第一次获取的hrtime为0
+那么setTimeout(cb, 1)，超时时间就是loop->time = 1(ms，node定时器精确到1ms，但是hrtime是精确到纳秒级别的)
+所以第一次loop进来的时候就有两种情况：
+
+1.由于第一次loop前的准备耗时超过1ms，当前的loop->time >=1 ，则uv_run_timer生效，timeout先执行
+2.由于第一次loop前的准备耗时小于1ms，当前的loop->time = 0，则本次loop中的第一次uv_run_timer不生效，那么io_poll后先执行uv_run_check，即immediate先执行，然后等close cb执行完后，继续执行uv_run_timer
+那么你说的为什么在回调中，一定是先immediate执行呢，其实也很容易理解
+你可以思考一下你写的场景
+由于你的timeout和immediate的事件注册是在readFile的回调执行时，触发的
+所以必然的，在readFile的回调执行前的每一次event loop进来的uv_run_timer都不会有超时事件触发
+那么当readFile执行完毕，kevent收到监听的fd事件完成后，执行了该回调，此时
+
+1.timeout事件注册
+2.immediate事件注册
+3.由于readFile的回调执行完毕，那么就会从uv_io_poll中出来，此时立即执行uv_run_check，所以immediate事件被执行掉
+4.最后的uv_run_timer检查timeout事件，执行timeout事件
+所以你会发现，在I/O回调中注册的两者，永远都是immediately先执行
+```
+
+https://juejin.cn/post/7218459472918675514
+
+
+  #### (eleme node interview)[https://elemefe.github.io/node-interview]
+
+### MySQL
+
+1. 总述
+https://juejin.cn/post/6850037271233331208 作者：贾大星
+
+https://juejin.cn/post/6844904166939164680  作者：捡田螺的小男孩
+ - B+tree 索引
+
+ - count(1)、count(*) 与 count(列名) 的区别？
+
+count(*)包括了所有的列，相当于行数，在统计结果的时候，不会忽略列值为NULL
+count(1)包括了忽略所有列，用1代表代码行，在统计结果的时候，不会忽略列值为NULL
+count(列名)只包括列名那一列，在统计结果的时候，会忽略列值为空（这里的空不是只空字符串或者0，而是表示null）的计数，即某个字段值为NULL时，不统计。
+
+count(*) 和 count(1)和count(列名)区别   ps：这道题说法有点多
+
+执行效果上：
+
+count(*)包括了所有的列，相当于行数，在统计结果的时候，不会忽略列值为NULL
+count(1)包括了所有列，用1代表代码行，在统计结果的时候，不会忽略列值为NULL
+count(列名)只包括列名那一列，在统计结果的时候，会忽略列值为空（这里的空不是只空字符串或者0，而是表示null）的计数，即某个字段值为NULL时，不统计。
+
+执行效率上：
+
+列名为主键，count(列名)会比count(1)快
+列名不为主键，count(1)会比count(列名)快
+如果表多个列并且没有主键，则 count(1) 的执行效率优于 count(*)
+如果有主键，则 select count（主键）的执行效率是最优的
+如果表只有一个字段，则 select count(*) 最优。
+
+
+第一题：
+下面这条SQL，该怎么创建联合索引？
+SELECT * FROM test WHERE a = 1 and b = 1 and c = 1;
+
+你以为的答案是（a,b,c），其实答案是6个，abc三个的排列组合，（a,b,c）、（a,c,b）、（b,a,c）、（b,c,a）、（c,a,b）、（c,b,a）。
+MySQL优化器为了适应索引，会调整条件的顺序。
+再给面试官补充一句，区分度高的字段放在最前面，大大加分。
+第二题：
+下面这条SQL，该怎么创建联合索引？
+SELECT * FROM test WHERE a = 1 and b > 1 and c = 1;
+
+考察的知识点是： 联合索引遇到范围匹配会停止，不会再匹配后面的索引字段。
+所以答案应该是：（a,c,b）和 （c,a,b）。
+当创建（a,c,b）和 （c,a,b）索引的时候，查询会用到3个字段的索引，效率更高。
+怎么判断是用到了3个字段的索引，而不是只用到前两个字段的索引呢？
+有个非常简单的方法，看执行计划的索引长度。
+
+由于int类型的字段占4个字节，3个字段长度刚好是12个字节。
+第三题：
+下面这条SQL，该怎么创建联合索引？
+SELECT * FROM test WHERE a in (1,2,3) and b > 1;
+
+答案是（a,b）。in条件查询会被转换成等值查询，可以验证一下：
+
+可以看到用到了两个字段的索引。
+所以我们在平时做开发，尽量想办法把范围查询转换成in条件查询，效率更高。
+
+作者：一灯架构
+链接：https://juejin.cn/post/7129490960169304095
+
+1. 知道慢查询大致怎么排查和优化 比如会看 explain
+
+2. 知道索引的结构 涉及 B+ 树啊之类的
+
+3. 知道最左匹配, 回表之类的是咋回事
+
+4. 事务的话我也不会, 搜点面试题看看
+5. mvcc
+
+https://www.v2ex.com/t/789368
+
+https://jiekun.dev/posts/2022-bytedance-interview/   https://jiekun.dev/posts/2023-mihoyo-interview/   https://jiekun.dev/posts/2023-futu-interview/  from https://www.v2ex.com/t/919283
+
+
+### Postgresql
+
+1. jsonb 是什么, 索引
+
+ https://juejin.cn/post/6844903857009623048  B+tree GIN(倒排)  create index ix_account_content on account USING GIN (content);
+下面这种查询并不能使用索引： 查询content 中不存在 avatar key 的数据条数 explain analyze select count(*) from account where content::jsonb ? 'avatar' = false; QUERY PLAN
+  作者：goodspeed
+  https://zhuanlan.zhihu.com/p/614324587
+
+ https://www.zhihu.com/question/462048963
+  1 单表数据量在1000W左右。 2 其中有个字段存储的结构类似为 {"20200101":10,"20200102":-1,"20200103":1000,"20200104":50} 这种key-value结构，其中key是动态的。 3 针对指定key的值进行范围查询时效率更高，如查询20200101 的值大于20 小100的记录 。
+目前试了一下对这个字段创建gin索引，使用精确查询的时候有用到索引 使用范围查询就没用到，没弄明原因
+
+  - 范围查询要用btree索引。 gin是倒排表，只能根据value去找所在行。
+
+2. BTree concurrent
+    https://zhuanlan.zhihu.com/p/639226810
+
+
+### Redis
+1. redis 集群三主三从，最少宕机几台集群就不可用了
+
+ - 不是非得3个master吧，只要有3个以上node就行，比如 2个master，1个slave，或者1个master，2个slave 也能跑起来，只不过，前者有一个master没有slave没法切换，后者数据没有分片相当于没有用到cluster但是选举是可以执行的，只要满足过半节点就行，slave也可投票，cluster实现的是gassip，不是raft这种强一致协议
+
+  链接：https://www.zhihu.com/question/354518943/answer/2111465016
+
+  - Hunter Piers
+    之前有个楼主回答的我觉得是有问题的，官方说明是必须要三个 Master 节点。
+    我的看法是，首先我们要知道一个前提，节点的有效性是靠会投票，50% 的节点认为失效，就算失效。
+    一个节点，不能给自己投票。
+
+   两个节点 A 说 B 下线，B 认为 A 下线，两个人互相说我连接不上你，没有定论。
+
+   至少三个节点，A、B 发现 C 不通，互相通知，得到一致性状态：C 的确下线。
+
+2. https://www.v2ex.com/t/529023
+问 redis 的持久化方式，这个我答 aof 和 rdb。再问 aof 和 rdb 的区别，这个答 aof 备份操作命令，rdb 备份具体数据。然后继续问 aof 文件太大会怎么样？我却不知道 aof 重写机制压缩文件。
+问 redis 的主从？答读写分离，主机写，从机读。然后问主从同步，支支吾吾答了个 bgsave 命令，讲不清楚。
+问 redis 的回收策略。答了 lru 和 ttl。然后让手写 lru 算法，写不出来。。
+问 redis 怎么做分布式锁，答 setnx 命令。再问怎么释放锁，答 del key。然后问，如果获取锁的模块宕机了怎么办？答设置缓存失效时间。然后继续深问，分布式锁 redis 做了主从，如果设置锁之后，主机在传输到从机的时候挂掉了，从机还没有加锁信息，如何处理？这个我就蒙了。
+
+还有一些关于 redis 的分布式锁是不是安全的讨论，这个 blog 讲的不错 http://zhangtielei.com/posts/blog-redlock-reasoning.html
+
+ - java 基础，集合源码，线程池源码，多线程并发源码问得最多。有些会问 jvm。
+ - 数据库基本必问索引和锁，还有 sql 调优。。以前我都不知道做后端对数据库要求这么高的。
+ - 框架就 ssm,springBoot 这些。
+ - 分布式的话就问缓存，消息队列，服务协调这些。
+ - 有的还会问几个 Linux 命令。
+
+3. 缓存击穿
+
+  缓存穿透：缓存和数据库中都没有的数据，可用户还是源源不断的发起请求，导致每次请求都会到数据库，从而压垮数据库  --> 解决:
+  缓存击穿：Redis中一个热点key在失效的同时，大量的请求过来，从而会全部到达数据库，压垮数据库 -->
+  缓存雪崩：Redis中缓存的数据大面积同时失效，或者Redis宕机，从而会导致大量请求直接到数据库，压垮数据库 -->
+  https://zhuanlan.zhihu.com/p/148837265
+
+### Clickhouse
+
+1. MergeTree
+  https://www.jianshu.com/p/6d547cbdc7ac ClickHouse存储结构及索引详解
+
+### system design
+  1. gitlab 上有个项目成员包括了几十个国家，由于网络的原因普遍反映操作痛苦，请给出优化方案
+     一个共享文档（不超过 10M ）需要任何每个国家和地区的用户都可以在 10 秒中内打开加载完毕，请给出优化方案
+
+#### 秒杀系统
+
+1. https://zhuanlan.zhihu.com/p/386787586
+
+数据库索引的索引是怎么实现的
+索引为什么要用B+树
+什么是聚簇索引
+A，B两个字段各自都有索引，where A = ? orderby B ,能用到索引吗？
+A，B, C三个字段各自都有索引，where A = ?，B=？，C=？能用到索引？这样写会遇到什么问题吗
+
+#### 短链接
+https://juejin.cn/post/7037747520872661023  302 非缓存 可统计   62进制自增ID
+https://juejin.cn/post/7080693577365323790
+https://www.cnblogs.com/rickiyang/p/12178644.html
+
+## list of list
+
+- https://github.com/ifuture-pro/developer-notes
+- https://github.com/CyC2018/CS-Notes

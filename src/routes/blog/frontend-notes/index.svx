@@ -1,0 +1,210 @@
+---
+title: 'front end development notes'
+outline: 'A brief knowledge graph about front end development basics'
+tags: [{ name: 'HTTP', link: 'https://kit.svelte.dev/' }, { name: 'React', link: 'https://kit.svelte.dev/' }, { name: 'CSS', link: 'https://www.tailwindcss.com' }, { name: 'JavaScript', link: 'https://www.markdownguide.org/'} ]
+published_at: '10 December 2021'
+---
+
+## Table of Content
+1. [浏览器](#browser)
+
+## 浏览器渲染
+
+### 重排/重绘/合成
+
+  https://mp.weixin.qq.com/s/57aMCVDjuVswEFFep3omLQ
+  HTML parser => DOM tree    CSS parser => CSSOM tree  finished append into *Render Tree* => Layout Tree => Layer Tree => Paint => Composite Rasterization DrawQuad
+  重排: JS/CSS改变元素宽度/高度/几何位置, 触发重新布局   全局范围 根节点html开始对RenderTree重新布局, 如修改窗口尺寸/方向,修改根元素尺寸/字体大小
+  重绘: 修改元素颜色   CSS transform在非主线程执行合成动画
+  1 缓存访问DOM样式信息, 事件委托减少事件处理器, querySelectorAll 获取静态集合
+        2 虚拟DOM 避免style内联  visibility: hidden replace display: none  防抖节流  分离读写减少重排  clientWidth style.width height缓存
+  3 no css expression 批量修改样式
+    4 实现一个动画，以1个像素为单位移动这样最平滑，但是reflow就会过于频繁，大量消耗CPU资源，如果以3个像素为单位移动则会好很多
+    动画效果应用到position属性为absolute或fixed的元素上，这样对其他元素影响较小
+
+  2. [What forces layout / reflow](https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
+  2.1 Getting box metrics
+  2.2 Scroll stuff
+  2.3 setting focus
+  Getting window dimensions
+  Calling getComputedStyle()
+  Getting Range dimensions
+
+
+### clientx pagex offsetx screenx scrollHeight clientHeight
+
+window innerHeight
+https://juejin.cn/post/6883353218319908871
+
+### 缓存
+https://juejin.cn/post/6844903593275817998
+Cache-Control no-cache no-store public private max-age
+
+Caldis
+
+总结一下：
+在 Header 内的字段用于控制缓存机制
+老方法 Expires，记录的绝对值
+新方法 Cache-Control 多了一堆选项，记录的时间是相对值
+获取缓存检测缓存是否过期，如果没过期取缓存，优先从内存，其次硬盘，如果过期，则与服务器协商缓存是否仍然可用，如果不可用则获取，可用取缓存
+
+### Animation
+requestIdleCallback和requestAnimationFrame有什么区别？ https://juejin.cn/post/6844903592831238157
+
+
+### Cookie
+https://zhuanlan.zhihu.com/p/666423749 如果没有设置Expires属性，那么表示这是一个会话期 cookie。一个会话结束于客户端被关闭时，这意味着会话期 cookie 会在客户端被关闭时移除
+https://www.v2ex.com/t/845259
+
+### Content security policy
+default-src script-src data-src font-src img-src  server writeHeader('Content-Security-Policy') https://stackoverflow.com/questions/30280370/how-does-content-security-policy-csp-work
+
+## JavaScript
+
+原型/原型链
+https://juejin.cn/post/6844904145917313038
+
+instanceof
+
+function _instanceof(A, B) {
+    var O = B.prototype;// 取B的显示原型
+    A = A.__proto__;// 取A的隐式原型
+    while (true) {
+        //Object.prototype.__proto__ === null
+        if (A === null)
+            return false;
+        if (O === A)// 这里重点：当 O 严格等于 A 时，返回 true
+            return true;
+        A = A.__proto__;
+    }
+}
+
+作者：追风少年在掘金
+链接：https://juejin.cn/post/6844903664214081543
+来源：稀土掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+require和import的区别
+1.import在代码编译时被加载，所以必须放在文件开头，require在代码运行时被加载，所以require理论上可以运用在代码的任何地方，所以import性能更好。
+ 2.import引入的对象被修改时，源对象也会被修改，相当于浅拷贝，require引入的对象被修改时，源对象不会被修改，官网称值拷贝，我们可以理解为深拷贝。
+ 3.import有利于tree-shaking（移除JavaScript上下文中未引用的代码），require对tree-shaking不友好。
+ 4.import会触发代码分割（把代码分离到不同的bundle中，然后可以按需加载或者并行加载这些文件），require不会触发。
+ 5.import是es6的一个语法标准，如果要兼容浏览器的话必须转化成es5的语法，require 是 AMD规范引入方式。
+https://cloud.tencent.com/developer/article/1611197
+
+#### Promise
+
+https://juejin.cn/post/6844903632203153415
+
+```js
+const promise = new Promise((resolve, reject) => {
+    console.log(1);
+    resolve();
+    console.log(2);
+    reject('error');
+})
+promise.then(() => {
+    console.log(3);
+}).catch(e => console.log(e))
+console.log(4);
+```
+
+### Typescript
+
+TypeScript 相关的面试题我见得不多，不过力扣中国的面试题算是难度偏高的，其中有一道 TS 的面试题，可以说是实用性和难度都有所兼顾，简单来说就是解包。
+// 解开参数和返回值中的Promise
+asyncMethod<T, U>(input: Promise<T>): Promise<Action<U>>
+ ↓
+asyncMethod<T, U>(input: T): Action<U>
+
+type Action<T> = T extends Promise ?
+
+// 解开参数中的Action
+syncMethod<T, U>(action: Action<T>): Action<U>
+ ↓
+syncMethod<T, U>(action: T): Action<U>
+
+https://blog.cjw.design/interview-questions/leetcode/q2
+
+https://www.cnblogs.com/xgqfrms/p/13611172.html
+
+作者：ssh_晨曦时梦见兮
+链接：https://juejin.cn/post/6844904103504527374
+
+TypeScript 有一个著名的 hack，可以使用 string & {}来获得字符串上的'宽松自动补全'。例如：
+type IconSize = 'small' | 'medium' | 'large' | (string & {});
+
+作者：ssh_晨曦时梦见兮
+链接：https://juejin.cn/post/7277797749886418998
+
+### WebSocket
+
+https://juejin.cn/post/6844903582290935822
+
+
+### TCP
+三次握手  四次挥手
+https://juejin.cn/post/6844903618886238221
+https://juejin.cn/post/6844903861698707463
+
+syn flood attack
+https://www.cnblogs.com/sunsky303/p/11811097.html
+
+TLS 握手协议
+https://www.ruanyifeng.com/blog/2014/02/ssl_tls.html
+
+https://github.com/qaz624824554/blog/blob/master/interview/2023%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98.md#ssltls%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%A1%E6%89%8B%E7%9A%84
+客户端发起连接：客户端（例如，浏览器）向服务器发起一个安全连接请求。这个请求包括客户端支持的TLS版本、支持的加密套件（加密算法和密钥交换方法的组合）以及一个随机数（ClientHello 随机数）。
+服务器响应：服务器从客户端提供的加密套件列表中选择一个加密套件，并向客户端返回服务器的证书（包含公钥和服务器身份信息）、选择的TLS版本和加密套件，以及一个随机数（ServerHello 随机数）。此外，如果需要客户端身份验证，服务器还会请求客户端的证书。
+证书验证：客户端验证服务器证书的有效性。证书应由受信任的证书颁发机构（CA）签名。这一步的目的是确保与客户端通信的服务器是可信的，防止中间人攻击。
+密钥交换：客户端使用服务器证书中的公钥加密一个新的随机数（称为 Pre-Master Secret），并将其发送给服务器。服务器使用其私钥解密 Pre-Master Secret。然后，客户端和服务器分别使用 ClientHello 随机数、ServerHello 随机数和 Pre-Master Secret，通过一个伪随机函数生成主密钥（Master Secret）。这个主密钥将用于之后的对称加密和解密操作。
+客户端和服务器协商参数：客户端和服务器根据主密钥生成一组加密参数（例如，对称密钥、初始化向量、消息验证码等），这些参数将用于保护后续的数据传输。
+客户端和服务器验证握手过程：客户端发送一个加密的 Finished 消息，服务器解密并验证消息的完整性。服务器也发送一个加密的 Finished 消息，客户端解密并验证。这一步的目的是确保双方已正确完成密钥交换和参数协商。
+加密数据传输：完成握手过程后，客户端和服务器使用协商的加密参数进行安全的数据传输。此时，所有传输的数据都是加密的，以确保其机密性和完整性。
+
+### React
+
+#### Hooks
+1 在无状态组件每一次函数上下文执行的时候，react用什么方式记录了hooks的状态？
+2 多个react-hooks用什么来记录每一个hooks的顺序的 ？ 换个问法！为什么不能条件语句中，声明hooks? hooks声明为什么在组件的最顶部？
+3 function函数组件中的useState，和 class类组件 setState有什么区别？
+4 react 是怎么捕获到hooks的执行上下文，是在函数组件内部的？
+5 useEffect,useMemo 中，为什么useRef不需要依赖注入，就能访问到最新的改变值？
+6 useMemo是怎么对值做缓存的？如何应用它优化性能？
+7 为什么两次传入useState的值相同，函数组件不更新?
+
+function Index(){
+    const [ num ,setNumber ] = React.useState(0)
+    const handerClick=()=>{
+        for(let i=0; i<5;i++ ){
+           setTimeout(() => {
+                setNumber(num+1)
+                console.log(num)
+           }, 1000)
+        }
+    }
+    return <button onClick={ handerClick } >{ num }</button>
+}
+
+作者：我不是外星人
+链接：https://juejin.cn/post/6944863057000529933
+
+https://juejin.cn/post/7101563941842583588
+https://github.com/brickspert/blog/issues/26
+
+#### FastRefresh
+  - https://github.com/umijs/umi/issues/6896
+  - https://github.com/alibaba/hooks/issues/390
+  - https://github.com/facebook/react/issues/16604
+
+  - related packages:  react-refresh/babel
+    @pmmmwh/react-refresh-webpack-plugin
+      lib/runtime/RefreshUtils.js: executeRuntime
+    webpack hot/dev-server.js check
+    webpack-dev-server client/utils/reloadApp.js
+
+
+### Reference
+
+  - https://github.com/sprout-echo/Front-end-knowledge-summary/issues/1
+  - https://github.com/qaz624824554/blog/blob/master/interview/
