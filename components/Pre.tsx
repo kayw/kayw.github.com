@@ -2,11 +2,12 @@
 
 import { useState, useRef } from 'react';
 import { Copy, CopyCheck } from 'lucide-react';
+//@ts-ignore
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Pre = (props) => {
-  const textInput = useRef(null);
+  const textInput = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -20,7 +21,7 @@ const Pre = (props) => {
   const onCopy = () => {
     setCopied(true);
     notify();
-    navigator.clipboard.writeText(textInput.current.textContent);
+    navigator.clipboard.writeText(textInput.current?.textContent ?? '');
     setTimeout(() => {
       setCopied(false);
     }, 2000);

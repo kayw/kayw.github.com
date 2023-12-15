@@ -35,6 +35,7 @@
     "app/**/*.js",
     "**/*.mjs",
     "scripts/**/*.ts",
+    "app/**/*.ts",
     "app/**/*.tsx",
     "components/**/*.tsx",
     "layouts/**/*.tsx",
