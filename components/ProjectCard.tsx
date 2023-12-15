@@ -6,7 +6,7 @@ import Image from './Image';
 //import { DevIcons } from './DevIcons';
 import { ArrowUpRight } from 'lucide-react';
 
-export const ProjectCard = ({ title, description, images, href, techs }) => {
+export const ProjectCard = ({ title, description, images = [] as string[], href, techs }) => {
   // to solve hydration mismatch error
   /*
   const [isMounted, setIsMounted] = useState(false);
@@ -57,7 +57,7 @@ https://brittanychiang.com/#projects
         </ul>
       </div>
       <div className="sm:order-1 sm:col-span-2">
-        {(images ?? []).map((imgSrc: string) => (
+        {images.map((imgSrc: string) => (
           <Image
             alt={title}
             width="200"

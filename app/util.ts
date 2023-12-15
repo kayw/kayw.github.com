@@ -1,5 +1,9 @@
-export const formatDate = (date, locale = 'en-US') => {
-  const options = {
+export const formatDate = (date: string, locale = 'en-US') => {
+  const options: {
+    year?: 'numeric' | '2-digit' | undefined;
+    month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow' | undefined;
+    day?: 'numeric' | '2-digit' | undefined;
+  } = {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

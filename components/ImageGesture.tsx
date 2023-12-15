@@ -273,7 +273,7 @@ export const ImageGuesture = forwardRef<ImageGestureHandle, ImageGestureProps>(
         'originalSize',
         'extra',
       ],
-      getContainer = () => typeof document !== 'undefined' && document.body,
+      getContainer = typeof document !== 'undefined' ? () => document.body : false,
       escToExit = true,
       scales,
       visible,
@@ -335,10 +335,12 @@ export const ImageGuesture = forwardRef<ImageGestureHandle, ImageGestureProps>(
     }
 
     // Scale
-    const hideScaleTimer = useRef(null);
+    const hideScaleTimer = useRef<object | null>(null);
     const showScaleValue = () => {
       !scaleValueVisible && setScaleValueVisible(true);
-      hideScaleTimer.current && clearTimeout(hideScaleTimer.current);
+      if (hideScaleTimer.current) {
+        clearTimeout(hideScaleTimer.current as unknown as number);
+      }
       hideScaleTimer.current = setTimeout(() => {
         setScaleValueVisible(false);
       }, 1000);
@@ -554,39 +556,39 @@ export const ImageGuesture = forwardRef<ImageGestureHandle, ImageGestureProps>(
       {
         key: 'fullScreen',
         name: 'Fullscreen',
-        content: <Fullscreen />,
+        icon: <Fullscreen />,
         onClick: onFullScreen,
       },
       {
         key: 'rotateRight',
         name: 'Rotate clockwise', //locale.ImagePreview.rotateRight,
-        content: <RotateCw />,
+        icon: <RotateCw />,
         onClick: onRotateRight,
       },
       {
         key: 'rotateLeft',
         name: 'Rotate anti clockwise', //locale.ImagePreview.rotateLeft,
-        content: <RotateCcw />,
+        icon: <RotateCcw />,
         onClick: onRotateLeft,
       },
       {
         key: 'zoomIn',
         name: 'Zoom In', //locale.ImagePreview.zoomIn,
-        content: <ZoomIn />,
+        icon: <ZoomIn />,
         onClick: onZoomIn,
         disabled: scale === defaultScales[defaultScales.length - 1],
       },
       {
         key: 'zoomOut',
         name: 'Zoom Out', //locale.ImagePreview.zoomOut,
-        content: <ZoomOut />,
+        icon: <ZoomOut />,
         onClick: onZoomOut,
         disabled: scale === defaultScales[0],
       },
       {
         key: 'originalSize',
         name: 'Original Size', //locale.ImagePreview.originalSize,
-        content: <Repeat1 />,
+        icon: <Repeat1 />,
         onClick: onResetScale,
       },
     ];

@@ -18,7 +18,7 @@ export interface ImageToolbarActionProps extends HTMLAttributes<HTMLDivElement> 
    * @zh 内容
    * @en content
    */
-  content: ReactNode;
+  icon: ReactNode;
   /**
    * @zh
    * 因为 content 只能定义内容，所以提供这个函数用于支持自定义外围元素，需要注意的是设置了 `getContainer`, 显示 `name` 的 `Tooltip` 将失效。
@@ -73,7 +73,7 @@ export const ImageToolbar = forwardRef<HTMLDivElement, ImageToolbarProps>(functi
   }
 
   const renderAction = (itemData: ImageToolbarActionProps /*, renderName = false*/) => {
-    const { content, disabled, key, name, getContainer, onClick, ...rest } = itemData;
+    const { icon: content, disabled, key, name, getContainer, onClick, ...rest } = itemData;
     const action = (
       <div
         className={`flex items-center ${

@@ -1,30 +1,30 @@
-'use client'
+'use client';
 
-import { useState, useRef } from 'react'
-import { Copy, CopyCheck } from 'lucide-react'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { useState, useRef } from 'react';
+import { Copy, CopyCheck } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Pre = (props) => {
-  const textInput = useRef(null)
-  const [hovered, setHovered] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const textInput = useRef(null);
+  const [hovered, setHovered] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const onEnter = () => {
-    setHovered(true)
-  }
+    setHovered(true);
+  };
   const onExit = () => {
-    setHovered(false)
-    setCopied(false)
-  }
+    setHovered(false);
+    setCopied(false);
+  };
   const onCopy = () => {
-    setCopied(true)
-    notify()
-    navigator.clipboard.writeText(textInput.current.textContent)
+    setCopied(true);
+    notify();
+    navigator.clipboard.writeText(textInput.current.textContent);
     setTimeout(() => {
-      setCopied(false)
-    }, 2000)
-  }
+      setCopied(false);
+    }, 2000);
+  };
 
   const notify = () =>
     toast.success('Copied', {
@@ -36,7 +36,7 @@ const Pre = (props) => {
       draggable: false,
       progress: undefined,
       theme: localStorage.getItem('theme'),
-    })
+    });
 
   return (
     <div
@@ -82,7 +82,7 @@ const Pre = (props) => {
         </pre>
       </pre>
     </div>
-  )
-}
+  );
+};
 
-export default Pre
+export default Pre;

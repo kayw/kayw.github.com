@@ -42,14 +42,14 @@ interface Cache<Value, Condition> {
   value?: Value;
 }
 
-function useMemo<Value, Condition = any[]>(
+function useMemo<Value, Condition = unknown[]>(
   getValue: () => Value,
   condition: Condition,
   shouldUpdate: (prev: Condition, next: Condition) => boolean,
 ) {
   const cacheRef = useRef<Cache<Value, Condition>>({});
 
-  if (!('value' in cacheRef.current) || shouldUpdate(cacheRef.current.condition, condition)) {
+  if (!('value' in cacheRef.current) || shouldUpdate(cacheRef.current.condition!, condition)) {
     cacheRef.current.value = getValue();
     cacheRef.current.condition = condition;
   }
@@ -62,7 +62,7 @@ function useComposeRef<T>(...refs: React.Ref<T>[]): React.Ref<T> {
     () => composeRef(...refs),
     refs,
     (prev, next) => prev.length !== next.length || prev.every((ref, i) => ref !== next[i]),
-  );
+  )!;
 }
 
 function supportRef(nodeOrComponent): boolean {
@@ -180,7 +180,7 @@ function contains(root: Node | null | undefined, n: Node) {
     if (node === root) {
       return true;
     }
-    node = node.parentNode;
+    node = node.parentNode!;
   }
 
   return false;
@@ -432,14 +432,16 @@ export const Portal = forwardRef<unknown, PortalProps>((props, ref) => {
   useScrollLocker(
     autoLock &&
       open &&
-      /*mergedContainer === defaultContainer || mergedContainer*/ innerContainer === document.body,
+      /*mergedContainer === defaultContainer || mergedContainer*/ (typeof document !== 'undefined'
+        ? innerContainer === document.body
+        : true),
   );
 
   // =========================== Ref ===========================
-  let childRef: React.Ref<any> = null;
+  let childRef: React.Ref<HTMLElement> = null;
 
   if (children && supportRef(children) && ref) {
-    ({ ref: childRef } = children as any);
+    ({ ref: childRef } = children as unknown as { ref: React.Ref<HTMLElement> });
   }
 
   const mergedRef = useComposeRef(childRef, ref);
@@ -455,8 +457,8 @@ export const Portal = forwardRef<unknown, PortalProps>((props, ref) => {
   const renderInline = innerContainer === false; //mergedContainer === false || inlineMock();
 
   let reffedChildren = children;
-  if (ref) {
-    reffedChildren = cloneElement(children as any, {
+  if (ref && children) {
+    reffedChildren = cloneElement(children as React.ReactElement, {
       ref: mergedRef,
     });
   }

@@ -5,10 +5,14 @@ import { Space_Grotesk } from 'next/font/google';
 //import { Analytics } from '@vercel/analytics/react'
 //import { AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search';
+//@ts-ignore
 import Header from '@/components/Header';
+//@ts-ignore
 import SectionContainer from '@/components/SectionContainer';
+//@ts-ignore
 import Footer from '@/components/Footer';
 import siteMetadata from '@/data/siteMetadata';
+//@ts-ignore
 import { ThemeProviders } from './theme-providers';
 import { Metadata } from 'next';
 

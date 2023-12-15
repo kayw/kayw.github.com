@@ -3,18 +3,15 @@
 import { useEffect, useState } from 'react';
 
 // https://www.patterns.dev/posts/singleton-pattern
-let instance;
+let instance = false;
 class Counter {
   counter: 0;
   constructor() {
     if (instance) {
       throw new Error('Singleton instance already created.');
     }
-    instance = this;
+    instance = true;
     this.counter = 0;
-  }
-  getInstance() {
-    return instance;
   }
   getCount() {
     return this.counter;
@@ -39,7 +36,9 @@ export function SideNote(props: {
   const { content, direction = 'right' } = props;
   const [count, setCount] = useState<number>();
   const [checked, setChecked] = useState(true);
-  const [matches, setMatches] = useState(window.matchMedia('(max-width: 2000px)').matches);
+  const [matches, setMatches] = useState(
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 2000px)').matches : [],
+  );
   const snrefId = `snref-${count}`;
   const snId = `sn-${count}`;
   useEffect(() => {
